@@ -1,0 +1,58 @@
+@font-face {
+    font-family: inrias;
+    src: url(../fonts/InriaSerif.ttf);
+}
+
+@font-face {
+    font-family: inria;
+    src: url(../fonts/);
+}
+
+body {
+    font-family: inria;
+    margin: 0;
+}
+
+
+/* css header */
+.logoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+#logo_img {
+    height: 40px;
+    width: 30px;
+}
+
+#separation_logo {
+    width: 1px;
+    height: 50px;
+    background-color: rgba(27, 75, 101, 1);
+}
+
+h1 {
+    font-family: inrias;
+    color: rgba(98, 185, 203, 1);
+    font-size: 30px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(95, 172, 211, 1);
+    padding: 0 20px 0 20px;
+}
+
+.link {
+    color: rgba(27, 75, 101, 1);
+    text-decoration: none;
+    font-size: 20px;
+}
+
+

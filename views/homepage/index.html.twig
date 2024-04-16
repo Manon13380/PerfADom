@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+{% block link %} 
+<link rel="stylesheet" href="/css/styleHomePage.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+{% block main %}
+	<main>
+		<section id="presentation">
+			<h2 id="title_homepage">Bienvenue sur PerfADom</h2>
+			<p>L'application qui simplifie la gestion des traitements par perfusion à domicile.
+				<br>
+				Pour les <span id="doctor" class="highLighted" >médecins</span>: prescrire en toute facilité.
+				<br>
+				Pour les <span id="patient" class="highLighted" >patients</span> :  suivre leur traitement en toute autonomie.
+				<br>
+				Pour les <span id="presta" class="highLighted">prestataires de soins</span>   :  accéder rapidement aux ordonnances de leurs patients</p>
+		</section>
+		<div id="connexion_container">
+			<img src="images/imageHomepage.png" alt="Ordonnance">
+			<section id="connexion_section">
+				<div id="title_connexion">
+					<h2>Connexion à l’espace client</h2>
+					<p>Je suis...</p>
+				</div>
+				<div id="bouton_connexion">
+					<a class="link bouton" href="">Médecin</a>
+					<a class="link bouton" href="">Patient</a>
+					<a class="link bouton" href="">Prestataire</a>
+				</div>
+			</section>
+		</div>
+	</main>
+{% endblock %}
+{% block footer %}
+	{% include "layouts/footer.html.twig" %}
+{% endblock %}

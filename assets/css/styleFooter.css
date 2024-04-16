@@ -1,0 +1,15 @@
+/* css footer */
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    background-color: rgba(95, 172, 211, 1);
+    color: rgba(243, 242, 255, 1);
+    text-align: center;
+}
+
+#copyright {
+    margin: 0;
+    font-family: inrias;
+}

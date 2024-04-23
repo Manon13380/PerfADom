@@ -1,0 +1,54 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	<title>PerfADom/Dashboard-Médecin</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleDoctorDashboard.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+{% block main %}
+	<main>
+		<div class="barnavContainer">
+			<div id="top_barnav">
+				<p class="bold">Bienvenue
+					<br>
+					{{doctorName|upper}}
+					{{doctorFirstname}}</p>
+				<div class="line"></div>
+				<p class="bold title">Mon patient</p>
+				<p class="bold">{{patient.gender}}
+					{{patient.firstname}}
+					{{patient.name|upper}}</p>
+				<a  href="">Modifier ses informations</a> <br> <br>
+				<a  href="">Ajouter un traitement</a>
+			</div>
+			<div class="linklistContainer">
+				<div class="line"></div>
+				<div class="linkList">
+					<a class="margin" href="">Mes modèles</a>
+					<a class="margin" href="">Mon compte</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="dashboardContainer">
+			<div id="breadcrumb">
+				<a href="/doctorDashboard">Dashboard</a>
+				<span>> Détails
+					{{patient.firstname}}
+					{{patient.name}}</span>
+
+			</div>
+
+		</div>
+	</main>
+{% endblock %}
+{% block footer %}
+	{% include "layouts/footer.html.twig" %}
+{% endblock %}
+{% block script %}
+	<script src="/js/dashboard.js"></script>
+{% endblock %}

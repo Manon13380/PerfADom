@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
-const prestataireShema = new mongoose.Schema({
+const prestataireSchema = new mongoose.Schema({
     societyName : {
         type: String,
         required : [true, "Le nom de votre société est requis"],
@@ -51,7 +52,7 @@ const prestataireShema = new mongoose.Schema({
         validate: {
             validator: function (v) {
                 return /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/]).{8,}$/.test(v)
-            }, message: "Entrez un mot de passe valide : il faut min 8 caractère, une majuscule, une minuscule et un caractère spécial sauf < ou >"
+            }, message: "Entrez un mot de passe valide :<br> il faut min 8 caractère, une majuscule,<br> une minuscule et un caractère spécial sauf < ou >"
         }
     },
     patientList: {
@@ -62,5 +63,31 @@ const prestataireShema = new mongoose.Schema({
     },
 })
 
-const prestataireModel = mongoose.model("prestataire", prestataireShema)
+prestataireSchema.pre("validate", async function (next) {
+    try {
+        const existingUser = await this.constructor.findOne({ mail: this.mail });
+        if (existingUser) {
+            this.invalidate("mail", "Cet email est déjà enregistré.")
+        }
+        next()
+    } catch (error) {
+        next(error)
+    }
+})
+
+prestataireSchema.pre("save", function ( next) {
+    if (!this.isModified("password")) {
+        return next();
+    }
+
+    bcrypt.hash(this.password, 10, (error, hash)=>{
+        if(error){
+            return next(error);
+        }
+        this.password = hash;
+        next()
+    })
+})
+
+const prestataireModel = mongoose.model("prestataire", prestataireSchema)
 module.exports = prestataireModel

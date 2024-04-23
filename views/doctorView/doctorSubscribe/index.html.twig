@@ -1,0 +1,102 @@
+{% extends "base.html.twig" %}
+{% block title %}
+<title>PerfADom/Inscription-Médecin</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleSubscribe.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+
+{% block main %}
+	<main>
+		<form action="/doctorSubscribe" method="post" enctype="multipart/form-data">
+			<div class="informationSection">
+				<p>Informations Personnelles :
+				</p>
+				{% if errors.mail is defined or errors.name is defined or errors.firstname is defined or errors.password is defined%}
+					<div id="error">
+						{% if errors.mail is defined %}
+							<p class="error">{{errors.mail.message}}</p>
+						{% endif %}
+						{% if errors.name is defined%}
+							<p class="error">{{errors.name.message}}</p>
+						{% endif %}
+						{% if errors.firstname is defined%}
+							<p class="error">{{errors.firstname.message}}</p>
+						{% endif %}
+						{% if errors.password is defined%}
+							<p class="error">{{errors.password.message}}</p>
+						{% endif %}
+					</div>
+				{% endif %}
+				<div class="doubleInput">
+					<input class="input" type="text" name="name" placeholder="Nom" required>
+					<input class="input" type="text" name="firstname" placeholder="Prénom" required>
+				</div>
+				<input class="input" type="mail" name="mail" placeholder="Adresse Mail" required>
+				<input class="input" type="password" name="password" placeholder="Mot de passe" required>
+			</div>
+			<div class="informationSection">
+				<p>Informations Professionnelles :</p>
+				{% if errors.numberADELI is defined or errors.numberRPPS is defined%}
+					<div>
+						{% if errors.numberADELI is defined%}
+							<p class="error">{{errors.numberADELI.message}}</p>
+						{% endif %}
+						{% if errors.numberRPPS is defined%}
+							<p class="error">{{errors.numberRPPS.message}}</p>
+						{% endif %}
+					</div>
+				{% endif %}
+				<select id="select" name="speciality" required>
+					<option id="placeholder" value="" disabeled seleccted hidden data-placeholder>Spécialité</option>
+					<option value="Médecin généraliste">Médecin généraliste</option>
+					<option value="Oncologue">Oncologue</option>
+					<option value="Cardiologue">Cardiologue</option>
+					<option value="Gastro-entérologue">Gastro-entérologue</option>
+					<option value="Chirurgien orthopédiste">Chirurgien orthopédiste</option>
+					<option value="Pédiatre">Pédiatre</option>
+					<option value="Neuro-Chirurgien">Neuro-Chirurgien</option>
+					<option value="Dermatologue">Dermatologue</option>
+				</select>
+				<div class="doubleInput">
+					<input class="input" type="text" name="numberADELI" placeholder="N° ADELI" required>
+					<input class="input" type="text" name="numberRPPS" placeholder="N° RPPS" required>
+				</div>
+				<div class="fileContainer ">
+					<p>Signature :</p>
+					<input type="file" name="signature" id="signature" required>
+				</div>
+				<div class="fileContainer two">
+					<p>Tampon :
+					</p>
+					<input type="file" name="stamp" id="stamp" required>
+				</div>
+			</div>
+			<div class="informationSection">
+				<p>Informations sur l'établissement :</p>
+				<div class="button">
+					<div class="doubleInput">
+						<input class="input" id="institution" name="institution" type="text" placeholder="Etablissement">
+						<input class="input" id="numberFINESS" name="numberFINESS" type="text" placeholder="N° FINESS">
+					</div>
+					<button id="create_button">Créer</button>
+				</div>
+			</div>
+		</form>
+		<section id="title_container">
+			<h2>Créer un compte</h2>
+			<h2>Médecin</h2>
+			<img src="images/connexion.png" alt="Image inscription">
+		</section>
+	</main>
+{% endblock %}
+
+{% block footer %}
+	{% include "layouts/footer.html.twig" %}
+{% endblock %}
+
+

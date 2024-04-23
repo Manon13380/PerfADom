@@ -1,0 +1,106 @@
+{% extends "base.html.twig" %}
+{% block title %}
+<title>PerfADom/Inscription-Patient</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleSubscribe.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+
+{% block main %}
+	<main>
+		<form action="/patientSubscribe" method="post">
+			<div class="informationSection">
+				<p>Informations Personnelles :
+				</p>
+				{% if errors.mail is defined or errors.name is defined or errors.firstname is defined or errors.password is defined or errors.number is defined%}
+					<div id="error">
+						
+						{% if errors.name is defined%}
+							<p class="error">{{errors.name.message}}</p>
+						{% endif %}
+						{% if errors.firstname is defined%}
+							<p class="error">{{errors.firstname.message}}</p>
+						{% endif %}
+						{% if errors.mail is defined %}
+							<p class="error">{{errors.mail.message}}</p>
+						{% endif %}
+						{% if errors.number is defined%}
+							<p class="error">{{errors.firstname.message}}</p>
+						{% endif %}
+						{% if errors.password is defined%}
+							<p class="error">{{errors.password.message}}</p>
+						{% endif %}
+					</div>
+				{% endif %}
+				<div class="checkbox">
+					<div class="doubleInput">
+						<div>
+							<label for="Mr">Mr</label>
+							<input type="radio" name="gender" value="Mr">
+						</div>
+						<div>
+							<label for="Mme">Mme</label>
+							<input type="radio" name="gender" value="Mme">
+						</div>
+					</div>
+				</div>
+				<div class="doubleInput">
+					<input class="input" type="text" name="name" placeholder="Nom" required>
+					<input class="input" type="text" name="firstname" placeholder="Prénom" required>
+				</div>
+				<input class="input" type="mail" name="mail" placeholder="Adresse Mail" required>
+				<div class="doubleInput">
+					<input class="input" type="tel" name="phone" placeholder="Téléphone">
+					<input class="input inputDate" type="date" name="birthday" placeholder="Date de naissance">
+				</div>
+				<input class="input" type="password" name="password" placeholder="Mot de passe" required>
+			</div>
+			<div class="informationSection">
+				<p>Informations Administrative :</p>
+				{% if errors.numberSS is defined or errors.nurse is defined or errors.pharmacy is defined%}
+					<div>
+						{% if errors.numberSS is defined%}
+							<p class="error">{{errors.numberSS.message}}</p>
+						{% endif %}
+						{% if errors.nurse is defined%}
+							<p class="error">{{errors.numbernurse.message}}</p>
+						{% endif %}
+						{% if errors.pharmacy is defined%}
+							<p class="error">{{errors.pharmacy.message}}</p>
+						{% endif %}
+					</div>
+				{% endif %}
+				<input class="input" type="text" name="numberSS" placeholder="N° Sécurité Social" required>
+				<div id="ALD_input"class="doubleInput checkbox">
+					<p>ALD :</p>
+					<label for="Oui">Oui</label>
+					<input type="radio" name="ALD" value="true">
+					<label for="Non">Non</label>
+					<input type="radio" name="ALD" value="false">
+
+				</div>
+				<input class="input" type="text" name="nurse" placeholder="Infirmier">
+				<input class="input" type="text" name="pharmacy" placeholder="pharmacie">
+				<select name="prestataire">
+					<option id="placeholder" value="" disabeled seleccted hidden data-placeholder>Prestataire</option>
+					{% for prestataire in prestataireList %}
+					<option value='{{prestataire._id}}'>{{prestataire.societyName}}  ( {{prestataire.salesPersonName}} {{prestataire.salesPersonFirstname}} )</option>			
+					{% endfor %}
+				</select>
+			</div>
+			<div class="button">
+				<button id="create_button">Créer</button>
+			</div>
+		</div>
+	</form>
+	<section id="title_container">
+		<h2>Créer un compte</h2>
+		<h2>Patient</h2>
+		<img src="images/connexion.png" alt="Image inscription">
+	</section>
+</main>{% endblock %}{% block footer %}
+{% include "layouts/footer.html.twig" %}{% endblock %}

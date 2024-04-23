@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt')
 
-const doctorShema = new mongoose.Schema({
+const doctorSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Votre nom est requis"],
@@ -31,46 +32,42 @@ const doctorShema = new mongoose.Schema({
     speciality: {
         type: String,
         required: [true, "Votre spécialité est requise"],
-        validate: {
-            validator: function (v) {
-                return /^[A-Za-zÀ-ÖØ-öø-ÿ\s\-]+$/.test(v)
-            }, message: "Entrez un nom de spécialité valide"
-        }
     },
     institution: {
         type: String,
-        required: [true, "Le nom de l'établissement est requis"],
         validate: {
             validator: function (v) {
-                return /^[A-Za-zÀ-ÖØ-öø-ÿ\s\-]+$/.test(v)
+                return /^[A-Za-zÀ-ÖØ-öø-ÿ\s\-]*$/.test(v)
             }, message: "Entrez un nom de spécialité valide"
         }
     },
     numberFINESS: {
         type: String,
-        required: [true, "Le numéro FINESS est requis"],
-        validate : {
-            validator : function(v) {
-                return /^[0-9]{9}$/.test(v)
-            }, message : "Entrez un numéro composé de 9 chiffres"
+        validate: {
+            validator: function (v) {
+                return /^[0-9]{0,9}$/.test(v)
+            }, message: "Entrez un numéro composé de 9 chiffres",
+            required: function () {
+                return this.institution ? true : false;
+            }
         }
     },
     numberADELI: {
         type: String,
         required: [true, "Votre numéro ADELI est requis"],
-        validate : {
-            validator : function(v) {
+        validate: {
+            validator: function (v) {
                 return /^[0-9]{9}$/.test(v)
-            }, message : "Entrez un numéro composé de 9 chiffres"
+            }, message: "ADELI : Entrez un numéro composé de 9 chiffres"
         }
     },
     numberRPPS: {
         type: String,
         required: [true, "Votre numéro RPSS est requis"],
-        validate : {
-            validator : function(v) {
+        validate: {
+            validator: function (v) {
                 return /^[0-9]{11}$/.test(v)
-            }, message : "Entrez un numéro composé de 11 chiffres"
+            }, message: "RPPS : Entrez un numéro composé de 11 chiffres"
         }
     },
     signature: {
@@ -87,7 +84,7 @@ const doctorShema = new mongoose.Schema({
         validate: {
             validator: function (v) {
                 return /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/]).{8,}$/.test(v)
-            }, message: "Entrez un mot de passe valide : il faut min 8 caractère, une majuscule, une minuscule et un caractère spécial sauf < ou >"
+            }, message: "Entrez un mot de passe valide :<br> il faut min 8 caractère, une majuscule,<br> une minuscule et un caractère spécial sauf < ou >"
         }
     },
     patientList: {
@@ -110,5 +107,31 @@ const doctorShema = new mongoose.Schema({
     },
 })
 
-const doctorModel = mongoose.model("doctor", doctorShema)
+doctorSchema.pre("validate", async function (next) {
+    try {
+        const existingUser = await this.constructor.findOne({ mail: this.mail });
+        if (existingUser) {
+            this.invalidate("mail", "Cet email est déjà enregistré.")
+        }
+        next()
+    } catch (error) {
+        next(error)
+    }
+})
+
+doctorSchema.pre("save", function ( next) {
+    if (!this.isModified("password")) {
+        return next();
+    }
+
+    bcrypt.hash(this.password, 10, (error, hash)=>{
+        if(error){
+            return next(error);
+        }
+        this.password = hash;
+        next()
+    })
+})
+
+const doctorModel = mongoose.model("doctor", doctorSchema)
 module.exports = doctorModel

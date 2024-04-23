@@ -1,0 +1,345 @@
+/* css Dashboard */
+a {
+    text-decoration: none;
+    color: rgba(27, 75, 101, 1);
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+main {
+    font-family: inria;
+    min-height: calc(100vh - 97px);
+    color: rgba(27, 75, 101, 1);
+}
+
+.line {
+    height: 1px;
+    width: 123px;
+    background-color: rgba(95, 172, 211, 1);
+}
+
+.linkList {
+    display: flex;
+    flex-direction: column;
+}
+
+.linkList a {
+    text-decoration: none;
+}
+
+.barnavContainer {
+    position: fixed;
+    font-family: inria;
+    min-height: calc(100vh - 97px);
+    border-right: 1px solid rgba(95, 172, 211, 1);
+    width: 250px;
+    background-color: rgba(202, 235, 255, 1);
+    padding-left: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.linklistContainer {
+    margin-bottom: 100px;
+}
+
+#top_barnav {
+    margin-top: 50px;
+
+}
+
+.margin {
+    margin-top: 1em;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.title {
+    font-size: 1.2em;
+}
+
+.dashboardContainer {
+    background-image: url("/images/fondDashboard.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: calc(100vh - 97px);
+    margin-left: 267px;
+    display: flex;
+    flex-direction: column;
+}
+
+#breadcrumb {
+    padding: 10px 0 0 10px;
+}
+
+.searchContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 150px;
+    margin-top: 50px;
+    margin-bottom: 100px;
+}
+
+.patientList {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    padding-top: 10px;
+
+}
+
+.patientCard {
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 62%;
+    height: 100px;
+    background-color: rgba(202, 235, 255, 1);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    position: relative;
+    margin-bottom: 50px;
+
+}
+
+.namePatient {
+    text-align: center;
+
+    flex: 1;
+    font-weight: bold;
+}
+
+.namePatient p,
+.birthday p {
+    margin: 0
+}
+
+.birthday {
+    text-align: center;
+
+    flex: 1;
+    margin-top: 50px;
+}
+
+.detailContainer {
+    text-align: center;
+    flex: 1;
+}
+
+#details {
+    text-decoration: none;
+    background-color: rgba(95, 172, 211, 1);
+    color: rgba(243, 242, 255, 1);
+    padding: 10px 15px 10px 15px;
+    border-radius: 10px;
+}
+
+.deleteButton {
+    position: absolute;
+    right: -1%;
+    top: -5%;
+}
+
+
+
+
+/* css bouton add patient */
+
+.button {
+    position: relative;
+    width: 143px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(202, 235, 255, 1);
+    background-color: rgba(202, 235, 255, 1);
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.button__icon {
+    border-radius: 0 10px 10px 0;
+}
+
+.button,
+.button__icon,
+.button__text {
+    transition: all 0.3s;
+}
+
+.button .button__text {
+    transform: translateX(20px);
+    color: rgba(27, 75, 101, 1);
+    font-weight: 500;
+}
+
+.button .button__icon {
+    position: absolute;
+    transform: translateX(109px);
+    height: 100%;
+    width: 35px;
+    background-color: rgba(95, 172, 211, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button .svg {
+    width: 32px;
+    stroke: #fff;
+}
+
+.button:hover {
+    background: rgba(95, 172, 211, 1);
+}
+
+.button:hover .button__text {
+    color: transparent;
+}
+
+.button:hover .button__icon {
+    width: 143px;
+    border-radius: 10px;
+    transform: translateX(0);
+}
+
+.button:active .button__icon {
+    background-color: rgba(95, 172, 211, 1);
+}
+
+.button:active {
+    border: 1px solid rgba(95, 172, 211, 1);
+}
+
+
+
+
+
+/* css add patient */
+
+#breadcrumb a {
+    text-decoration: none;
+    color: rgba(27, 75, 101, 1);
+}
+
+#add_patient {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 50px;
+}
+
+#form_add_patient {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 50px;
+    background-color: rgba(202, 235, 255, 1);
+    border-radius: 10px;
+    width: 500px;
+    height: 650px;
+
+}
+
+.informationSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 20px;
+}
+
+.doubleInput {
+    display: flex;
+    gap: 55px
+}
+
+#create_button {
+    cursor: pointer;
+    text-align: center;
+    padding: 10px 20px 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(95, 172, 211, 1);
+    color: rgba(243, 242, 255, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+h2 {
+    font-size: 35px;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+#add_patient p {
+    margin: 0;
+}
+
+
+.input {
+    border-radius: 10px;
+    border: 1px solid rgba(95, 172, 211, 1);
+    text-align: center;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+    height: 20px;
+    background-color: rgba(95, 172, 211, 0.2);
+}
+
+.input:focus {
+    outline: none;
+}
+
+.select {
+    border-radius: 10px;
+    border: 1px solid rgba(95, 172, 211, 1);
+    text-align: center;
+    color: rgba(142, 175, 193, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    height: 24px;
+    background-color: rgba(95, 172, 211, 0.2);
+}
+
+.select:focus {
+    outline: none;
+}
+
+::-webkit-input-placeholder {
+    text-align: center;
+    color: rgba(142, 175, 193, 1)
+}
+
+.createButton {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 50px;
+}
+
+.inputDate {
+    width: 172px;
+}
+
+input[type="date"] {
+    color: rgba(142, 175, 193, 1)
+}
+
+.inputAlone {
+    width: 402px;
+}
+
+.select {
+    width: 408px;
+}

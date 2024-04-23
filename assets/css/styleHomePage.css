@@ -1,3 +1,4 @@
+
 main {
     min-height: calc(100vh - 97px);
     color: rgba(27, 75, 101, 1);
@@ -70,11 +71,103 @@ main {
     background-color: rgba(243, 242, 255, 1);
     border: 1px solid rgba(95, 172, 211, 1);
     border-radius: 10px;
-    padding: 10px ;
-    box-shadow:  0 4px 20px 0 rgba(0, 0, 0, 0.25);;
+    padding: 10px;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.25);
+    ;
 }
 
 .bouton:hover {
     background-color: rgba(95, 172, 211, 1);
-    color :rgba(243, 242, 255, 1);
+    color: rgba(243, 242, 255, 1);
+}
+.line {
+    display: block;
+}
+
+@media (max-width:1660px) {
+    #connexion_container {
+        gap: 300px
+    }
+}
+
+@media (max-width:1460px) {
+    #connexion_container {
+        gap: 100px
+    }
+}
+
+@media (max-width:1260px) {
+    #connexion_container {
+        position: relative; 
+      }
+     #connexion_section {
+        position: relative;
+    }
+    #ordonnance {
+        position: absolute;
+        bottom : -27%
+    }
+    #connexion_container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    main {
+        display: flex;
+        flex-direction: column;
+        row-gap: 145px;
+    }
+}
+
+@media (max-width:700px) {
+    main {
+        row-gap: 72.5px;
+    }
+    #ordonnance {
+        width: 540px;
+        bottom : -25%
+    }
+    #presentation p {
+        text-align: center;
+    }
+    .newLine {
+        display: block;
+    }
+}
+
+@media (max-width:590px) {
+    #ordonnance {
+        width: 450px;
+    }
+    #connexion_section {
+        width: 300px;
+        height: 350px;
+        row-gap: 40px;
+    }
+    #bouton_connexion {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap : 20px
+    }
+}
+
+@media (max-width:460px) {
+    #ordonnance {
+        width: 400px;
+    }
+}
+
+@media (max-width:400px) {
+    #ordonnance {
+        width: 350px;
+        bottom : -19%
+    }
+}
+
+@media (max-width:378px) {
+    #ordonnance {
+        width: 350px;
+        bottom : -13%
+    }
 }

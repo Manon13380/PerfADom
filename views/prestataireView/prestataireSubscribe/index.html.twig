@@ -1,0 +1,65 @@
+{% extends "base.html.twig" %}
+{% block title %}
+<title>PerfADom/Inscription-Prestataire</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleSubscribe.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+
+{% block main %}
+	<main>
+		<form id="my_form" action="/prestataireSubscribe" method="post">
+			<div class="informationSection">
+				<p>Informations Société :</p>
+				{% if errors.societyName is defined %}
+					<div>
+						{% if errors.societyName is defined%}
+							<p class="error">{{errors.societyName.message}}</p>
+						{% endif %}
+					</div>
+				{% endif %}
+				<input class="input" type="text" name="societyName" placeholder="Nom de la société" required>
+			</div>
+			<div class="informationSection">
+				<p>Informations commercial :</p>
+				{% if errors.salesPersonName is defined or errors.salesPersonFirstname is defined or errors.mail is defined or errors.password is defined %}
+					<div>
+						{% if errors.salesPersonName is defined%}
+							<p class="error">{{errors.salesPersonName.message}}</p>
+						{% endif %}
+						{% if errors.salesPersonFirstname is defined%}
+							<p class="error">{{errors.salesPersonFirstname.message}}</p>
+						{% endif %}
+						{% if errors.mail is defined%}
+							<p class="error">{{errors.mail.message}}</p>
+						{% endif %}
+						{% if errors.password is defined%}
+							<p class="error">{{errors.password.message}}</p>
+						{% endif %}
+					</div>
+				{% endif %}
+				<div class="doubleInput">
+					<input class="input" type="text" name="salesPersonName" placeholder="Nom" required>
+					<input class="input" type="text" name="salesPersonFirstname" placeholder="Prénom" required>
+				</div>
+				<input class="input" type="mail" name="mail" placeholder="Adresse Mail" required>
+				<input class="input" type="tel" name="phone" placeholder="Téléphone">
+				<input class="input" type="password" name="password" placeholder="Mot de passe" required>
+			</div>
+			<div class="button">
+				<button  id="create_button">Créer</button>
+			</div>
+		</div>
+	</form>
+	<section id="title_container">
+		<h2>Créer un compte</h2>
+		<h2>Prestataire</h2>
+		<img src="images/connexion.png" alt="Image inscription">
+	</section>
+</main>{% endblock %}{% block footer %}
+{% include "layouts/footer.html.twig" %}{% endblock %}
+

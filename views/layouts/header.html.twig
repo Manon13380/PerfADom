@@ -1,10 +1,32 @@
 <header>
 	<div class="logoContainer">
-		<img id="logo_img" src="images/logoPerfADom.png" alt="Logo du site">
+		<img id="logo_img" src="/images/logoPerfADom.png" alt="Logo du site">
 		<div id="separation_logo"></div>
 		<h1>PerfADom</h1>
 	</div>
-	<div>
-		<a class="link" href="">S'inscrire</a>
+	{% if  uri == '/doctorDashboard' %}
+		<form class="form_search" action="" method="post">
+			<input class="input_search" type="text" name="search" placeholder="Rechercher un patient">
+			<button class="search"><img src="images/search.png" alt="images/search.png"></button>
+		</form>
+	{% endif %}
+	<div class="menuContainer">
+		{% if uri == '/doctorSubscribe' or uri == '/patientSubscribe' or uri == '/prestataireSubscribe' %}
+			<a class="link" href="/">Connexion</a>
+		{%  elseif uri == '/doctorDashboard' or uri == '/patientDashboard' or uri == '/prestataireDashboard' or uri == '/addPatient' or uri =="/detailPatient"%}
+			<a class="link" href="/">Deconnexion</a>
+		{% else %}
+			{% if uri == '/doctorConnexion' or uri == '/patientConnexion' or uri == '/prestataireConnexion' %}
+				<a id="home" class="link" href="/">Home</a>
+			{% endif %}
+			<div class="dropdown">
+				<span class="link">S'inscrire</span>
+				<div class="dropdownContent">
+					<a class="dropdownTop" href="/doctorSubscribe">Médecin</a>
+					<a href="/patientSubscribe">Patient</a>
+					<a class="dropdownBottom" href="/prestataireSubscribe">Prestataire</a>
+				</div>
+			{% endif %}
+		</div>
 	</div>
 </header>

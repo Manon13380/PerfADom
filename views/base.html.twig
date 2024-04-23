@@ -5,11 +5,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> {% block title %}{% endblock %}
 		<link rel="stylesheet" href="/css/styleHeader.css">
 		<link rel="stylesheet" href="/css/styleFooter.css"> 
+		{% block title %}{% endblock %}
 		{% block link %}{% endblock %}
 		</head>
 		<body>
 			{% block header %}{% endblock %}
 			{% block main %}{% endblock %}
 			{% block footer %}{% endblock %}
+			{% block script %}{% endblock %}
 		</body>
 	</html>

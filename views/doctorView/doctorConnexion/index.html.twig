@@ -1,0 +1,43 @@
+{% extends "base.html.twig" %}
+{% block title %}
+<title>PerfADom/Connexion-Médecin</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleConnexion.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+
+{% block main %}
+	<main>
+		<div id="imageContainer">
+			<img id="imageMedecin" src="images/connexionMedecin.png" alt="Image Connexion">
+		</div>
+		<section id="connexion_container">
+			<div>
+				<h2>Connexion à l'espace</h2>
+				<h2>Médecin</h2>
+			</div>
+			<form action="/doctorDashboard" method="post">
+				<div>
+					{% if error.mail is defined  %}
+						<p class="error">{{error.mail}}</p>
+					{% endif %}
+					<input class="input" type="mail" name="mail" placeholder="Adresse Mail" required>
+				</div>
+				<div>
+					{% if error.password is defined  %}
+						<p class="error">{{error.password}}</p>
+					{% endif %}
+					<input class="input" type="password" name="password" placeholder="Mot de passe" required>
+				</div>
+				<button id="login_button">login</button>
+			</form>
+		</section>
+	</main>
+{% endblock %}
+{% block footer %}
+	{% include "layouts/footer.html.twig" %}
+{% endblock %}

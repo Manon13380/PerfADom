@@ -11,23 +11,7 @@
 {% endblock %}
 {% block main %}
 	<main>
-		<div class="barnavContainer">
-			<div id="top_barnav">
-				<p class="bold">Bienvenue
-					<br>
-					{{doctorName|upper}}
-					{{doctorFirstname}}</p>
-				<div class="line"></div>
-				<p class="bold title">Mes patients</p>
-			</div>
-			<div class="linklistContainer">
-				<div class="line"></div>
-				<div class="linkList">
-					<a class="margin" href="">Mes modèles</a>
-					<a class="margin" href="">Mon compte</a>
-				</div>
-			</div>
-		</div>
+		{% include "layouts/sidebar.html.twig" %}
 		<div class="dashboardContainer">
 			<div id="breadcrumb">
 				<a href="/doctorDashboard">Dashboard</a>

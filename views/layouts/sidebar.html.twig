@@ -2,27 +2,37 @@
 	<div id="top_barnav">
 		<p class="bold">Bienvenue
 			<br>
-			{{doctorName|upper}}
-			{{doctorFirstname}}</p>
+			{{userName|upper}}
+			{{userFirstname}}
+			{% if userSociety is defined %}
+				<br>
+				{{userSociety|upper}}
+			{% endif %}
+		</p>
 		<div class="line"></div>
-		{% if uri == "/doctorDashboard" or uri =="/addPatient" %}
-			<p class="bold title">Mes patients</p>
-		{% else %}
-			<p class="bold title">Mon patient</p>
-			<p class="bold">{{patient.gender}}
-				{{patient.firstname}}
-				{{patient.name}}</p>
-			<a href="">Modifier ses informations</a>
-			<br>
-			<br>
-			<a href="">Ajouter un traitement</a>
+		{% if role == "doctor" or role =="prestataire" %}
+			{% if uri == "/doctorDashboard" or uri =="/addPatient" or uri =="/prestataireDashboard" %}
+				<p class="bold title">Mes patients</p>
+			{% else %}
+				<p class="bold title">Mon patient</p>
+				<p class="bold">{{patient.gender}}
+					{{patient.firstname}}
+					{{patient.name|upper}}</p>
+				<a {% if role == "doctor" %} href="/updatePatientD/{{patient._id}}" {% else %} href="/updatePatientP/{{patient._id}}" {% endif %}= class=" {% if uri == " /updatePatient" %} bold {% endif %}">Modifier ses informations</a>
+				{% if role == "doctor" %}
+					<br>
+					<br>
+					<a href="">Ajouter un traitement</a>
+				{% endif %}
+			{% endif %}
 		{% endif %}
-
 	</div>
 	<div class="linklistContainer">
 		<div class="line"></div>
 		<div class="linkList">
-			<a class="margin" href="">Mes modèles</a>
+			{% if role == "doctor" %}
+				<a class="margin" href="">Mes modèles</a>
+			{% endif %}
 			<a class="margin" href="">Mon compte</a>
 		</div>
 	</div>

@@ -23,6 +23,7 @@ main {
     background-color: rgba(95, 172, 211, 1);
 }
 
+
 .linkList {
     display: flex;
     flex-direction: column;
@@ -62,6 +63,10 @@ main {
     font-weight: bold;
 }
 
+.regular {
+    font-weight: 400;
+}
+
 .title {
     font-size: 1.2em;
 }
@@ -97,6 +102,18 @@ main {
 
 }
 
+.info {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 125px;
+    text-align: center;
+    font-size: 2.5em;
+    background-color: rgba(202, 235, 255, 1);
+    width: 50%;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
 .patientCard {
     margin: auto;
     display: flex;
@@ -126,7 +143,6 @@ main {
 
 .birthday {
     text-align: center;
-
     flex: 1;
     margin-top: 50px;
 }
@@ -150,7 +166,11 @@ main {
     top: -5%;
 }
 
-
+.error {
+    color: red;
+    margin: 0;
+    text-align: center;
+}
 
 
 /* css bouton add patient */
@@ -295,6 +315,7 @@ h2 {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
     height: 20px;
     background-color: rgba(95, 172, 211, 0.2);
+    color: rgba(142, 175, 193, 1);
 }
 
 .input:focus {
@@ -342,4 +363,68 @@ input[type="date"] {
 
 .select {
     width: 408px;
+}
+
+/* css detailsPatient */
+
+.detailPatient {
+    margin: auto;
+    background-color:  rgba(202, 235, 255, 1);
+    width: 60%;
+    height: 80%;
+    border-radius: 10px;
+}
+
+
+.grandLine {
+    margin-left: auto;
+    margin-right: auto;
+    height: 1px;
+    width: 85%;
+    background-color: rgba(95, 172, 211, 1);
+}
+.detailPatient{
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+}
+.titleDetail {
+   text-align: center;
+}
+
+.informationContainer{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.treatmentList p {
+    margin-left : 70px
+}
+
+/* css update patient */
+.inputRadio {
+    display: flex;
+    align-items: center;
+    gap:10px;
+}
+
+#updatePresta{
+    width: 172px;
+}
+
+.secondInformation{
+   display: flex;
+   flex-direction: column;
+   row-gap: 20px; 
+}
+.updatePatient{
+    width: 45%;
+    height: 60%;
+}
+
+.validateButton {
+    border: none;
+    background : transparent;
+    cursor: pointer;
 }

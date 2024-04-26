@@ -44,7 +44,6 @@ exports.postPatient = async (req, res) => {
         await prestataireModel.updateOne({ _id: req.body.prestataire }, { $push: { patientList: newPatient._id } });
         res.redirect("/")
     } catch (error) {
-        console.log(error)
         res.render("patientView/patientSubscribe/index.html.twig", {
             errors: error.errors,
             uri: req.path,

@@ -1,0 +1,101 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	<title>PerfADom/Dashboard-Médecin</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleDashboard.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+{% block main %}
+	<main>
+		{% include "layouts/sidebar.html.twig" %}
+		<div class="dashboardContainer">
+			<div id="breadcrumb">
+				<a href="/doctorDashboard">Dashboard</a>
+				<span>> Détails
+					{{patient.firstname}}
+					{{patient.name|upper}}</span>
+			</div>
+			<div class="detailPatient">
+				<div class="titleDetail">
+					<p class="bold title">{{patient.gender}}
+						{{patient.firstname}}
+						{{patient.name}}</p>
+					<p class="bold">Date de naissance :
+						<span class="formattedDate regular">{{patient.birthday}}</span>
+					</p>
+				</div>
+				<div class="informationContainer">
+					<div class="firstInformation">
+						<p class="bold">N° SS :
+							<span class="formattedSs regular">{{patient.numberSS}}</span>
+						</p>
+						<p class="bold">ALD :
+							<span class="regular">
+								{% if patient.ALD  %}
+									Oui
+								{% else %}
+									Non
+								{% endif %}
+							</span>
+						</p>
+						<p class="bold">Tel :
+							<span class="regular">
+								{% if patient.number == "" %}
+									Pas de téléphone renseigné
+								{% else %}
+									<span class="formattedNumber">{{patient.number}}</span>
+								{% endif %}
+							</span>
+						</p>
+						<p class="bold">Mail :
+							<span class="regular">
+								{{patient.mail}}
+							</span>
+						</p>
+						<p class="bold">Prestataire :
+							<span class="regular">
+								{% if patient.prestataire is empty %}
+									Pas de prestataire renseigné
+								{% else %}
+									{{prestataire.societyName}}/{{prestataire.salesPersonName}} {{prestataire.salesPersonFirstname}}
+								{% endif %}
+							</span>
+						</p>
+					</div>
+					<div class="secondInformation">
+						<p class="bold">Infirmier :
+							<span class="regular">
+								{% if patient.nurse == "" %}Pas d'infirmier renseigné
+								{% else %}
+									{{patient.nurse}}
+								{% endif %}
+							</span>
+						</p>
+						<p class="bold">Pharmacie :
+							<span class="regular">
+								{% if patient.pharmacy == "" %}Pas de pharmacie renseignée
+								{% else %}
+									{{patient.pharmacy}}
+								{% endif %}
+							</span>
+						</p>
+					</div>
+				</div>
+				<div class="grandLine"></div>
+				<div class="treatmentList">
+					<p class="bold">Traitements :</p>
+				</div>
+			</div>
+		</div>
+	</main>
+{% endblock %}
+{% block footer %}
+	{% include "layouts/footer.html.twig" %}
+{% endblock %}
+{% block script %}
+	<script src="/js/dashboard.js"></script>
+{% endblock %}

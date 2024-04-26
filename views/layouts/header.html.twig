@@ -13,7 +13,7 @@
 	<div class="menuContainer">
 		{% if uri == '/doctorSubscribe' or uri == '/patientSubscribe' or uri == '/prestataireSubscribe' %}
 			<a class="link" href="/">Connexion</a>
-		{%  elseif uri == '/doctorDashboard' or uri == '/patientDashboard' or uri == '/prestataireDashboard' or uri == '/addPatient' or uri =="/detailPatient"%}
+		{%  elseif uri == '/doctorDashboard' or uri == '/patientDashboard' or uri == '/prestataireDashboard' or uri == '/addPatient' or uri =="/detailPatient" or uri == "/updatePatientD" or uri == "/updatePatientP"%}
 			<a class="link" href="/">Deconnexion</a>
 		{% else %}
 			{% if uri == '/doctorConnexion' or uri == '/patientConnexion' or uri == '/prestataireConnexion' %}

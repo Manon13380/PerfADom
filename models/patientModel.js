@@ -42,8 +42,8 @@ const patientSchema = new mongoose.Schema({
         type : String,
         validate : {
             validator : function(v){
-                return /^0[1-9][0-9]{8}$/.test(v)
-            }, message : "Entrez un numéro valide"
+                return v.trim().length === 0 ||/^0[1-9][0-9]{8}$/.test(v)
+            }, message : "Entrez un numéro de téléphone valide"
         }
     },
     numberSS : {

@@ -1,0 +1,123 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	<title>PerfADom/Dashboard-Médecin</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleDashboard.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+{% block main %}
+	<main>
+		{% include "layouts/sidebar.html.twig" %}
+		<div class="dashboardContainer ">
+			<div id="breadcrumb">
+				<a href="/doctorDashboard">Dashboard</a>
+				<span>> Détails
+					{{patient.firstname}}
+					{{patient.name}}</span>
+			</div>
+			<form class="detailPatient updatePatient" {% if role == "doctor" %} action ="/updatePatientD/{{patient._id}}" {% else %} action="/updatePatientP/{{patient._id}}" {% endif %} method="post">
+				<div class="titleDetail">
+					<p class="bold title">{{patient.gender}}
+						{{patient.firstname}}
+						{{patient.name}}</p>
+					<p class="bold">Date de naissance :
+						{% if role == "doctor" %}
+							<input class="input inputDate" type="date" name="birthday" value="{{birthday}}">
+						{% else %}
+							<span class="formattedDate regular">{{patient.birthday}}</span>
+						{% endif %}
+					</p>
+				</div>
+				<div class="informationContainer">
+					<div class="firstInformation">
+						<p class="bold">N° SS :
+							{% if role == "doctor" %}
+								<input class="input" type="text" name="numberSS" value="{{patient.numberSS}}">
+							{% else %}
+								<span class="formattedSs regular">{{patient.numberSS}}</span>
+							{% endif %}
+						</p>
+						<div class="inputRadio">
+							<p class="bold">ALD :</p>
+							{% if role == "doctor" %}
+								<label for="Oui">Oui</label>
+								<input type="radio" name="ALD" value="true" {% if patient.ALD == true %} checked {% endif %}>
+								<label for="Non">Non</label>
+								<input type="radio" name="ALD" value="false" {% if patient.ALD == false %} checked {% endif %}>
+							{% else %}
+								{% if patient.ALD  %}
+									Oui
+								{% else %}
+									Non
+								{% endif %}
+							{% endif %}
+
+						</div>
+						<p class="bold">Tel :
+							{% if role == "doctor" %}
+								<input class="input" type="text" name="number" value="{{patient.number}}" required>
+							{% else %}
+								{% if patient.number == "" %}
+									Pas de téléphone renseigné
+								{% else %}
+									<span class="formattedNumber regular">{{patient.number}}</span>
+								{% endif %}
+							{% endif %}
+
+						</p>
+						<p class="bold">Mail :
+							{% if role == "doctor" %}
+								<input class="input" type="mail" name="mail" value="{{patient.mail}}" required>
+							{% else %}
+								<span class="regular">
+									{{patient.mail}}
+								</span>
+							{% endif %}
+
+						</p>
+						<p class="bold">Prestataire :
+							{% if role == "doctor" %}
+								<select id="updatePresta" class="select" name="prestataire">
+									{% for prestataire in prestataireList %}
+										<option value='{{prestataire._id}}' {% if prestataire._id in patient.prestataire %} selected {% endif %}>{{prestataire.societyName}}
+											(
+											{{prestataire.salesPersonName}}
+											{{prestataire.salesPersonFirstname}}
+											)
+										</option>
+									{% endfor %}
+									<option id="placeholder" value="" {% if patient.prestataire is empty %} selected {% endif %}>Aucun prestataire
+									</option>
+								</select>
+							{% else %}
+								<span class="regular">
+									{% if patient.prestataire is empty %}
+										Pas de prestataire renseigné
+									{% else %}
+										{{prestataire.societyName}}/{{prestataire.salesPersonName}}
+										{{prestataire.salesPersonFirstname}}
+									{% endif %}
+								</span>
+							{% endif %}
+						</p>
+					</p>
+				</div>
+				<div class="secondInformation">
+					<div class="inputRadio">
+						<p class="bold">Infirmier :</p>
+						<textarea class="input"  name="nurse">{{patient.nurse}}</textarea>
+					</div>
+					<div class="inputRadio">
+						<p class="bold">Pharmacie :</p>
+						<textarea class="input"  name="pharmacy" >{% if patient.pharmacy == "" %} {% else %} {{patient.pharmacy}} {% endif %}</textarea>
+					</div>
+				</div>
+			</div>
+			<button class="validateButton"><img src="/images/valider.png" alt="Valider"></button>
+		</form>
+	</div>
+</div></div></main>{% endblock %}{% block footer %}{% include "layouts/footer.html.twig" %}{% endblock %}{% block script %}<script src="/js/dashboard.js"></script>{% endblock %}

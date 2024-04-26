@@ -1,6 +1,7 @@
 const doctorModel = require('../models/doctorModel')
 const prestataireModel = require('../models/prestataireModel')
 const patientModel = require('../models/patientModel')
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt')
 
 
@@ -41,7 +42,7 @@ exports.getDoctorDashboard = async (req, res) => {
         let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
         res.render("dashboard/index.html.twig", {
             uri: req.path,
-            role : req.session.role,
+            role: req.session.role,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
@@ -56,7 +57,7 @@ exports.getAddPatient = async (req, res) => {
         let prestataireList = await prestataireModel.find()
         res.render("doctorView/addPatient/index.html.twig", {
             uri: req.path,
-            role : req.session.role,
+            role: req.session.role,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
@@ -75,7 +76,7 @@ exports.getDetailPatient = async (req, res) => {
         let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
         res.render("detailsPatient/index.html.twig", {
             uri: detailPath,
-            role : req.session.role,
+            role: req.session.role,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
@@ -97,7 +98,7 @@ exports.getUpdatePatient = async (req, res) => {
         let birthday = FormatDate(newBirthday)
         res.render("updatePatient/index.html.twig", {
             uri: detailPath,
-            role : req.session.role,
+            role: req.session.role,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
@@ -119,7 +120,7 @@ exports.deletePatient = async (req, res) => {
         console.log(error)
         res.render("doctorView/doctorDashboard/index.html.twig", {
             uri: req.path,
-            role : req.session.role,
+            role: req.session.role,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
@@ -135,15 +136,39 @@ exports.postPatient = async (req, res) => {
             delete req.body.prestataire
         }
         let newPatient = new patientModel(req.body)
+        let password = genererMotDePasse()
+        newPatient.password = password
         newPatient.validateSync();
         await newPatient.save();
         await prestataireModel.updateOne({ _id: req.body.prestataire }, { $push: { patientList: newPatient._id } });
         await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: newPatient._id } });
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            hôte: "smtp.gmail.com",
+            port: 465,
+            sécurisé: true,
+            auth: {
+                user: process.env.USER_MAIL,
+                pass: process.env.USER_PW
+            }
+        });
+
+
+        const mailOptions = {
+            from: process.env.USER_MAIL,
+            to: process.env.USER_PERSO_MAIL,
+            subject: "Mot de passe Perfadom",
+            text: "Votre médecin vous a créé un compte sur PerfADom : \n\n" 
+            + "Voici vos identifant pour vos connecter \n" 
+            + "Identifiant:" + newPatient.mail +"\n"
+            + "Mot de passe :" + password
+        };
+        await transporter.sendMail(mailOptions);
         res.redirect("/doctorDashboard")
     } catch (error) {
         res.render("doctorview/addPatient/index.html.twig", {
             errors: error.errors,
-            role : req.session.role,
+            role: req.session.role,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
@@ -165,7 +190,7 @@ exports.updatePatient = async (req, res) => {
     try {
         if (req.body.prestataire == "") {
             delete req.body.prestataire
-            if (patient.prestataire.length != 0 ) {
+            if (patient.prestataire.length != 0) {
                 await prestataireModel.updateOne({ _id: patient.prestataire[0] }, { $pull: { patientList: req.params.patientID } });
                 await patientModel.updateOne({ _id: req.params.patientID }, { $pull: { prestataire: patient.prestataire[0] } });
             }
@@ -181,7 +206,7 @@ exports.updatePatient = async (req, res) => {
         res.render("doctorView/updatePatient/index.html.twig", {
             errors: error.errors,
             uri: detailPath,
-            role : req.session.role,
+            role: req.session.role,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
@@ -223,7 +248,7 @@ exports.postLogin = async (req, res) => {
         if (doctor) {
             if (await bcrypt.compare(req.body.password, doctor.password)) {
                 req.session.role = "doctor",
-                req.session.user = doctor._id
+                    req.session.user = doctor._id
                 req.session.userName = doctor.name
                 req.session.userFirstname = doctor.firstname
                 res.redirect("/doctorDashboard")
@@ -256,4 +281,21 @@ function FormatDate(date) {
     }
 
     return year + "-" + month + "-" + day;
+}
+
+function genererMotDePasse() {
+    const longueur = 8;
+    const caracteresSpeciaux = '!@#$%^&*()-_=+';
+    const majuscule = String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+    const minuscule = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+    const chiffre = Math.floor(Math.random() * 10);
+    const caractereSpecial = caracteresSpeciaux[Math.floor(Math.random() * caracteresSpeciaux.length)];
+    const autresCaracteres = Array.from({ length: longueur - 4 }, () => {
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' + caracteresSpeciaux.replace('<', '').replace('>', '');
+        return caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }).join('');
+
+    const motDePasse = majuscule + minuscule + chiffre + caractereSpecial + autresCaracteres;
+
+    return motDePasse;
 }

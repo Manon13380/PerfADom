@@ -111,16 +111,7 @@ header {
 }
 
 .input_search {
-    border: none;
-    background-color: transparent;
-}
-
-.input_search:focus{
-    outline: none;
-}
-
-.form_search {
-    padding : 0 5px 0 5px;
+   padding : 0 5px 0 5px;
     border-radius: 10px;
     border: 1px solid rgba(95, 172, 211, 1);
     text-align: center;
@@ -128,6 +119,14 @@ header {
     height: 30px;
     width:220px;
     background-color: rgba(95, 172, 211, 0.2);
+}
+
+.input_search:focus{
+    outline: none;
+}
+
+.form_search {
+    
     display: flex;
     justify-content: center;
     align-items: center;

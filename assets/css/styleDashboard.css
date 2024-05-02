@@ -4,6 +4,10 @@ a {
     color: rgba(27, 75, 101, 1);
 }
 
+#breadcrumb span {
+    font-weight: bold;
+}
+
 body {
     min-height: 100vh;
     display: flex;
@@ -86,12 +90,15 @@ main {
     padding: 10px 0 0 10px;
 }
 
+.search {
+    cursor: pointer;
+}
+
 .searchContainer {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 150px;
-    margin-top: 50px;
     margin-bottom: 100px;
 }
 
@@ -111,7 +118,7 @@ main {
     background-color: rgba(202, 235, 255, 1);
     width: 50%;
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.25);
 }
 
 .patientCard {
@@ -123,7 +130,7 @@ main {
     height: 100px;
     background-color: rgba(202, 235, 255, 1);
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.25);
     position: relative;
     margin-bottom: 50px;
 
@@ -136,15 +143,17 @@ main {
     font-weight: bold;
 }
 
-.namePatient p,
-.birthday p {
+.namePatient p {
     margin: 0
+}
+
+.number {
+    margin-bottom: 30px;
 }
 
 .birthday {
     text-align: center;
     flex: 1;
-    margin-top: 50px;
 }
 
 .detailContainer {
@@ -187,6 +196,7 @@ main {
     border-radius: 10px;
     text-decoration: none;
 }
+
 
 .button__icon {
     border-radius: 0 10px 10px 0;
@@ -254,12 +264,12 @@ main {
 }
 
 #add_patient {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    row-gap: 50px;
+    margin: auto;
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
+
+
 
 #form_add_patient {
     display: flex;
@@ -270,7 +280,7 @@ main {
     background-color: rgba(202, 235, 255, 1);
     border-radius: 10px;
     width: 500px;
-    height: 650px;
+    height: 550px;
 
 }
 
@@ -294,13 +304,20 @@ main {
     border-radius: 10px;
     background-color: rgba(95, 172, 211, 1);
     color: rgba(243, 242, 255, 1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.25);
+}
+
+.sectionTitle {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 0;
 }
 
 h2 {
     font-size: 35px;
     margin-bottom: 0;
     font-weight: 400;
+
 }
 
 #add_patient p {
@@ -327,9 +344,10 @@ h2 {
     border: 1px solid rgba(95, 172, 211, 1);
     text-align: center;
     color: rgba(142, 175, 193, 1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.25);
     height: 24px;
     background-color: rgba(95, 172, 211, 0.2);
+    width: 408px;
 }
 
 .select:focus {
@@ -361,15 +379,12 @@ input[type="date"] {
     width: 402px;
 }
 
-.select {
-    width: 408px;
-}
 
 /* css detailsPatient */
 
 .detailPatient {
     margin: auto;
-    background-color:  rgba(202, 235, 255, 1);
+    background-color: rgba(202, 235, 255, 1);
     width: 60%;
     height: 80%;
     border-radius: 10px;
@@ -383,48 +398,136 @@ input[type="date"] {
     width: 85%;
     background-color: rgba(95, 172, 211, 1);
 }
-.detailPatient{
+
+.detailPatient {
     display: flex;
     flex-direction: column;
     row-gap: 30px;
 }
+
 .titleDetail {
-   text-align: center;
+    text-align: center;
 }
 
-.informationContainer{
+.informationContainer {
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
+.addPatient {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .treatmentList p {
-    margin-left : 70px
+    margin-left: 70px
+}
+
+#add_patient {
+    background-color: rgba(95, 172, 211, 0.5);
 }
 
 /* css update patient */
 .inputRadio {
     display: flex;
     align-items: center;
-    gap:10px;
+    gap: 10px;
 }
 
-#updatePresta{
+#updatePresta {
     width: 172px;
 }
 
-.secondInformation{
-   display: flex;
-   flex-direction: column;
-   row-gap: 20px; 
+.secondInformation {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
 }
-.updatePatient{
+
+.updatePatient {
     width: 45%;
-    height: 60%;
+    height: 500px;
 }
 
 .validateButton {
     border: none;
-    background : transparent;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* css add treatment */
+
+#add_treatment {
+    margin: auto;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+#form_add_treatment {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    row-gap: 20px;
+    background-color: rgba(202, 235, 255, 1);
+    border-radius: 10px;
+    width: 900px;
+    height: 650px;
+}
+
+#add_medication {
+    background-color: rgba(95, 172, 211, 0.5);
+
+}
+
+.inputMedicationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px
+}
+
+#medContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 30px
+}
+
+.medicationCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: ;
+}
+
+.inputContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.inputQuantityAmpoule {
+    width:40px;
+}
+
+#inputPeriodQuantity,
+#inputPeriodDuration{
+    width :70px
+}
+.informationCard{
+    background-color:rgb(95, 172, 211);
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
+    position: relative;
+}
+.delete_Button{
+    position: absolute;
+    right: 0;
+    top:0;
     cursor: pointer;
 }

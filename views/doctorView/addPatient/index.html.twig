@@ -17,9 +17,9 @@
 				<a href="/doctorDashboard">Dashboard</a>
 				<span>> Ajouter un patient</span>
 			</div>
-			<section id= "add_patient">
-            <h2>Ajouter un patient</h2>
-				<form id="form_add_patient" action="/addPatient" method="post">
+			<section id="add_patient">
+				<h2 class="sectionTitle">Ajouter un patient</h2>
+				<form id="form_add_patient" action="/createPatient" method="post">
 					<div class="informationSection">
 						<p>Informations Personnelles :
 						</p>
@@ -64,49 +64,51 @@
 							<input class="input" type="tel" name="number" placeholder="Téléphone">
 							<input class="input inputDate" type="date" name="birthday" placeholder="Date de naissance">
 						</div>
-					</div>
-					<div class="informationSection">
-						<p>Informations Administrative :</p>
-						{% if errors.numberSS is defined or errors.nurse is defined or errors.pharmacy is defined%}
-							<div>
-								{% if errors.numberSS is defined%}
-									<p class="error">{{errors.numberSS.message}}</p>
-								{% endif %}
-								{% if errors.nurse is defined%}
-									<p class="error">{{errors.numbernurse.message}}</p>
-								{% endif %}
-								{% if errors.pharmacy is defined%}
-									<p class="error">{{errors.pharmacy.message}}</p>
-								{% endif %}
-							</div>
-						{% endif %}
-						<input class="input inputAlone" type="text" name="numberSS" placeholder="N° Sécurité Social" required>
-						<div id="ALD_input" class="doubleInput checkbox">
-							<p>ALD :</p>
-							<label for="Oui">Oui</label>
-							<input type="radio" name="ALD" value="true">
-							<label for="Non">Non</label>
-							<input type="radio" name="ALD" value="false">
+						<div class="informationSection">
+							<p>Informations Administrative :</p>
+							{% if errors.numberSS is defined or errors.nurse is defined or errors.pharmacy is defined%}
+								<div>
+									{% if errors.numberSS is defined%}
+										<p class="error">{{errors.numberSS.message}}</p>
+									{% endif %}
+									{% if errors.nurse is defined%}
+										<p class="error">{{errors.numbernurse.message}}</p>
+									{% endif %}
+									{% if errors.pharmacy is defined%}
+										<p class="error">{{errors.pharmacy.message}}</p>
+									{% endif %}
+								</div>
+							{% endif %}
+							<input class="input inputAlone" type="text" name="numberSS" placeholder="N° Sécurité Social" required>
+							<div id="ALD_input" class="doubleInput checkbox">
+								<p>ALD :</p>
+								<label for="Oui">Oui</label>
+								<input type="radio" name="ALD" value="true">
+								<label for="Non">Non</label>
+								<input type="radio" name="ALD" value="false">
 
+							</div>
+							<input class="input inputAlone" type="text" name="nurse" placeholder="Infirmier">
+							<input class="input inputAlone" type="text" name="pharmacy" placeholder="pharmacie">
+							<select class="select" name="prestataire">
+								<option id="placeholder" value="" disabeled seleccted hidden data-placeholder>Prestataire</option>
+								{% for prestataire in prestataireList %}
+									<option value='{{prestataire._id}}'>{{prestataire.societyName}}
+										(
+										{{prestataire.salesPersonName}}
+										{{prestataire.salesPersonFirstname}}
+										)</option>
+								{% endfor %}
+							</select>
 						</div>
-						<input class="input inputAlone" type="text" name="nurse" placeholder="Infirmier">
-						<input class="input inputAlone" type="text" name="pharmacy" placeholder="pharmacie">
-						<select class="select" name="prestataire">
-							<option id="placeholder" value="" disabeled seleccted hidden data-placeholder>Prestataire</option>
-							{% for prestataire in prestataireList %}
-								<option value='{{prestataire._id}}'>{{prestataire.societyName}}
-									(
-									{{prestataire.salesPersonName}}
-									{{prestataire.salesPersonFirstname}}
-									)</option>
-							{% endfor %}
-						</select>
+						<div class="createButton">
+							<button id="create_button">Créer</button>
+						</div>
 					</div>
-					<div class="createButton">
-						<button id="create_button">Créer</button>
-					</div>
-				</div>
-			</form>
-		</section>
-</main>{% endblock %}{% block footer %}
-{% include "layouts/footer.html.twig" %}{% endblock %}
+				</form>
+			</section>
+		</main>
+	{% endblock %}
+	{% block footer %}
+		{% include "layouts/footer.html.twig" %}
+	{% endblock %}

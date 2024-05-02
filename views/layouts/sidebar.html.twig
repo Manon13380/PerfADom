@@ -11,18 +11,26 @@
 		</p>
 		<div class="line"></div>
 		{% if role == "doctor" or role =="prestataire" %}
-			{% if uri == "/doctorDashboard" or uri =="/addPatient" or uri =="/prestataireDashboard" %}
-				<p class="bold title">Mes patients</p>
-			{% else %}
-				<p class="bold title">Mon patient</p>
-				<p class="bold">{{patient.gender}}
-					{{patient.firstname}}
-					{{patient.name|upper}}</p>
-				<a {% if role == "doctor" %} href="/updatePatientD/{{patient._id}}" {% else %} href="/updatePatientP/{{patient._id}}" {% endif %}= class=" {% if uri == " /updatePatient" %} bold {% endif %}">Modifier ses informations</a>
-				{% if role == "doctor" %}
-					<br>
-					<br>
-					<a href="">Ajouter un traitement</a>
+			{% if uri != '//doctorDashboard?searchPatient' %}
+				{% if uri == "/doctorDashboard" or uri =="/addPatient" or uri =="/prestataireDashboard" or uri =='/searchMyPatientD' or uri =='/searchMyPatientP' %}
+					<p class="bold title">Mes patients</p>
+				{% else %}
+					{% if patient.id in doctor.patientList %}
+						<p class="bold title">Mon patient</p>
+					{% endif %}
+					<p class="bold">{{patient.gender}}
+						{{patient.firstname}}
+						{{patient.name|upper}}</p>
+					{% if patient.id in doctor.patientList %}
+						<a {% if role == "doctor" %} href="/updatePatientD/{{patient._id}}" {% else %} href="/updatePatientP/{{patient._id}}" {% endif %} {% if uri == "/updatePatientD" or uri == "/updatePatientP" %} class="bold" {% endif %}>Modifier ses informations</a>
+						{% if role == "doctor" %}
+							<br>
+							<br>
+							<a href="/addTreatment/{{patient._id}}" {% if uri == "/addTreatment"  %} class="bold" {% endif %}>Ajouter un traitement</a>
+						{% endif %}
+					{% endif %}
+
+
 				{% endif %}
 			{% endif %}
 		{% endif %}
@@ -30,9 +38,9 @@
 	<div class="linklistContainer">
 		<div class="line"></div>
 		<div class="linkList">
-			{% if role == "doctor" %}
+			{# {% if role == "doctor" %}
 				<a class="margin" href="">Mes modèles</a>
-			{% endif %}
+			{% endif %} #}
 			<a class="margin" href="">Mon compte</a>
 		</div>
 	</div>

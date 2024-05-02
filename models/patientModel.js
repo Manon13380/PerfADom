@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const nameFormat = require('../customDepedencies/nameFormat')
 const bcrypt = require('bcrypt')
 
 
@@ -15,6 +16,9 @@ const patientSchema = new mongoose.Schema({
                 return /^[^\>\<]+$/.test(v)
             }, message: "Entrez un nom valide"
         }
+    },
+    slug: {
+        type:String,
     },
     firstname: {
         type: String,
@@ -38,42 +42,42 @@ const patientSchema = new mongoose.Schema({
             }, message: "Entrez un mail valide"
         }
     },
-    number : {
-        type : String,
-        validate : {
-            validator : function(v){
-                return v.trim().length === 0 ||/^0[1-9][0-9]{8}$/.test(v)
-            }, message : "Entrez un numéro de téléphone valide"
+    number: {
+        type: String,
+        validate: {
+            validator: function (v) {
+                return v.trim().length === 0 || /^0[1-9][0-9]{8}$/.test(v)
+            }, message: "Entrez un numéro de téléphone valide"
         }
     },
-    numberSS : {
-        type : Number,
-        validate : {
-            validator : function(v){
+    numberSS: {
+        type: Number,
+        validate: {
+            validator: function (v) {
                 return /^(1|2)\d{14,15}$/.test(v)
-            }, message : "Entrez un numéro de sécurité social valide"
+            }, message: "Entrez un numéro de sécurité social valide"
         }
     },
-    ALD : {
-        type : Boolean,
+    ALD: {
+        type: Boolean,
     },
-    nurse : {
-        type : String,
-        validate : {
-            validator : function (v){
+    nurse: {
+        type: String,
+        validate: {
+            validator: function (v) {
                 return /^[^<>]*$/
-            }, message : "Coordonnées infirmier non valide"
+            }, message: "Coordonnées infirmier non valide"
         }
     },
-    pharmacy : {
-        type : String,
-        validate : {
-            validator : function (v){
+    pharmacy: {
+        type: String,
+        validate: {
+            validator: function (v) {
                 return /^[^<>]*$/
-            }, message : "Coordonnées pharmacie non valide"
+            }, message: "Coordonnées pharmacie non valide"
         }
     },
-    prestataire : {
+    prestataire: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "prestataire"
@@ -88,12 +92,12 @@ const patientSchema = new mongoose.Schema({
             }, message: "Entrez un mot de passe valide :<br> il faut min 8 caractère, une majuscule,<br> une minuscule et un caractère spécial sauf < ou >"
         }
     },
-    treatmentList :{
-            type: [{
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "treatment"
-            }]
-      
+    treatmentList: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "treatment"
+        }]
+
     }
 })
 
@@ -108,14 +112,20 @@ patientSchema.pre("validate", async function (next) {
         next(error)
     }
 })
+patientSchema.pre("save", function (next) {
+    this.slug = this.name + "_" + this.firstname
+    this.name = nameFormat(this.name);
+    this.firstname = nameFormat(this.firstname);
+    next()
+})
 
-patientSchema.pre("save", function ( next) {
+patientSchema.pre("save", function (next) {
     if (!this.isModified("password")) {
         return next();
     }
 
-    bcrypt.hash(this.password, 10, (error, hash)=>{
-        if(error){
+    bcrypt.hash(this.password, 10, (error, hash) => {
+        if (error) {
             return next(error);
         }
         this.password = hash;

@@ -27,10 +27,10 @@ const medicationShema = new mongoose.Schema({
         required : [true, "Le temps de perfusion est requis"]
     },
     doctor : {
-        type: [{
+       
             type: mongoose.Schema.Types.ObjectId,
-            ref: "patient"
-        }]
+            ref: "doctors"
+      
     }
 })
 

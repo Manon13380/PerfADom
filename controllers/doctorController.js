@@ -1,8 +1,10 @@
 const doctorModel = require('../models/doctorModel')
 const prestataireModel = require('../models/prestataireModel')
 const patientModel = require('../models/patientModel')
-const nodemailer = require('nodemailer');
+const medicationModel = require('../models/medicationModel')
+const transporter = require('../customDepedencies/transporternodemailer');
 const bcrypt = require('bcrypt')
+const genererMotDePasse = require('../customDepedencies/generatePassword')
 
 
 
@@ -37,19 +39,97 @@ exports.getDoctorSubscribe = (req, res) => {
     }
 }
 
-exports.getDoctorDashboard = async (req, res) => {
+exports.getAddTreatment = async (req, res) => {
     try {
-        let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
-        res.render("dashboard/index.html.twig", {
-            uri: req.path,
+        const doctor = await doctorModel.findById(req.session.user)
+        const originalUrl = req.path;
+        const detailPath = "/" + originalUrl.split('/')[1];
+        let patient = await patientModel.findOne({ _id: req.params.patientID })
+        const medicationList = await medicationModel.find();
+        let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
+        res.render("doctorView/addTreatment/index.html.twig", {
+            uri: detailPath,
             role: req.session.role,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
-            patientList: patientList.patientList
-        })
+            patient: patient,
+            prestataire: prestataire,
+            medicationList: medicationList,
+            doctor: doctor
+        }
+        )
     } catch (error) {
         res.send(error)
+    }
+}
+
+exports.getmedicationList = async (req, res) => {
+    try {
+        const med = await medicationModel.findById(req.params.id)
+        res.json(med)
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+exports.getDoctorDashboard = async (req, res) => {
+    try {
+        const originalUrl = req.originalUrl;
+        const detailPath = "/" + originalUrl.split('=')[0];
+        if (req.query.search && req.query.search != "") {
+            let search = req.query.search.split(' ')
+            let patientList = await doctorModel.findById({ _id: req.session.user }).populate({
+                path: "patientList", match: {
+                    $or: [
+                        { name: { $regex: new RegExp(search[0], 'i') }, firstname: { $regex: new RegExp(search[1], 'i') } },
+                        { name: { $regex: new RegExp(search[1], 'i') }, firstname: { $regex: new RegExp(search[0], 'i') } },
+                        { name: { $regex: new RegExp(search[0], 'i') } },
+                        { firstname: { $regex: new RegExp(search[0], 'i') } },
+                    ]
+                }
+            })
+            res.render("dashboard/index.html.twig", {
+                uri: detailPath,
+                role: req.session.role,
+                userID: req.session.user,
+                userName: req.session.userName,
+                userFirstname: req.session.userFirstname,
+                patientList: patientList.patientList
+            })
+        }
+        else if (req.query.searchPatient && req.query.searchPatient != "") {
+            let search = req.query.searchPatient.split(' ')
+            let patientList = await patientModel.find({
+                $or: [
+                    { name: { $regex: new RegExp(search[0], 'i') }, firstname: { $regex: new RegExp(search[1], 'i') } },
+                    { name: { $regex: new RegExp(search[1], 'i') }, firstname: { $regex: new RegExp(search[0], 'i') } },
+                    { name: { $regex: new RegExp(search[0], 'i') } },
+                    { firstname: { $regex: new RegExp(search[0], 'i') } },
+                ]
+            })
+            res.render("dashboard/index.html.twig", {
+                uri: detailPath,
+                role: req.session.role,
+                userID: req.session.user,
+                userName: req.session.userName,
+                userFirstname: req.session.userFirstname,
+                patientList: patientList
+            })
+        } else {
+            let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
+            res.render("dashboard/index.html.twig", {
+                uri: req.path,
+                role: req.session.role,
+                userID: req.session.user,
+                userName: req.session.userName,
+                userFirstname: req.session.userFirstname,
+                patientList: patientList.patientList
+            })
+
+        }
+    } catch (error) {
+        res.send(error.message)
     }
 }
 exports.getAddPatient = async (req, res) => {
@@ -64,12 +144,14 @@ exports.getAddPatient = async (req, res) => {
             prestataireList: prestataireList
         })
     } catch (error) {
+        console.log(error)
         res.send(error)
     }
 }
 
 exports.getDetailPatient = async (req, res) => {
     try {
+        const doctor = await doctorModel.findById(req.session.user)
         const originalUrl = req.path;
         const detailPath = "/" + originalUrl.split('/')[1];
         let patient = await patientModel.findOne({ _id: req.params.patientID })
@@ -81,7 +163,8 @@ exports.getDetailPatient = async (req, res) => {
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
             patient: patient,
-            prestataire: prestataire
+            prestataire: prestataire,
+            doctor: doctor
         })
     } catch (error) {
         res.send(error)
@@ -93,9 +176,10 @@ exports.getUpdatePatient = async (req, res) => {
         const originalUrl = req.path;
         const detailPath = "/" + originalUrl.split('/')[1];
         let prestataireList = await prestataireModel.find()
+        const doctor = await doctorModel.findById(req.session.user)
         let patient = await patientModel.findOne({ _id: req.params.patientID })
         let newBirthday = new Date(patient.birthday);
-        let birthday = FormatDate(newBirthday)
+        let birthday = newBirthday.toISOString().slice(0, 10);
         res.render("updatePatient/index.html.twig", {
             uri: detailPath,
             role: req.session.role,
@@ -104,21 +188,22 @@ exports.getUpdatePatient = async (req, res) => {
             userFirstname: req.session.userFirstname,
             patient: patient,
             birthday: birthday,
-            prestataireList: prestataireList
+            prestataireList: prestataireList,
+            doctor: doctor
         })
     } catch (error) {
-        res.send(error)
+        console.log(error);
+        res.send(error.mesage)
     }
 }
 
 exports.deletePatient = async (req, res) => {
     try {
-        patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
+        let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
         await doctorModel.updateOne({ _id: req.session.user }, { $pull: { patientList: req.params.patientID } })
         res.redirect("/doctorDashboard")
     } catch (error) {
-        console.log(error)
-        res.render("doctorView/doctorDashboard/index.html.twig", {
+        res.render("dashboard/index.html.twig", {
             uri: req.path,
             role: req.session.role,
             userID: req.session.user,
@@ -142,30 +227,21 @@ exports.postPatient = async (req, res) => {
         await newPatient.save();
         await prestataireModel.updateOne({ _id: req.body.prestataire }, { $push: { patientList: newPatient._id } });
         await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: newPatient._id } });
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            hôte: "smtp.gmail.com",
-            port: 465,
-            sécurisé: true,
-            auth: {
-                user: process.env.USER_MAIL,
-                pass: process.env.USER_PW
-            }
-        });
-
-
         const mailOptions = {
             from: process.env.USER_MAIL,
             to: process.env.USER_PERSO_MAIL,
-            subject: "Mot de passe Perfadom",
-            text: "Votre médecin vous a créé un compte sur PerfADom : \n\n" 
-            + "Voici vos identifant pour vos connecter \n" 
-            + "Identifiant:" + newPatient.mail +"\n"
-            + "Mot de passe :" + password
+            subject: "PerfADom : Identifiants de connexion",
+            text: "Bonjour " + newPatient.gender + " " + newPatient.name + " " + newPatient.firstname + ",\n\n"
+                + "Votre médecin vous a créé un compte sur PerfADom. \n\n"
+                + "Voici vos identifants pour vos connecter : \n\n"
+                + "Identifiant : " + newPatient.mail + "\n"
+                + "Mot de passe : " + password + "\n\n"
+                + "Cordialement \n\n L'équipe PerfADom"
         };
         await transporter.sendMail(mailOptions);
         res.redirect("/doctorDashboard")
     } catch (error) {
+        console.log(error);
         res.render("doctorview/addPatient/index.html.twig", {
             errors: error.errors,
             role: req.session.role,
@@ -175,7 +251,23 @@ exports.postPatient = async (req, res) => {
             errors: error.errors,
             uri: req.path,
             prestataireList: prestataireList,
+        })
+    }
+}
 
+exports.addPatient = async (req, res) => {
+    try {
+        let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
+        await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: req.params.patientID } })
+        res.redirect("/doctorDashboard")
+    } catch (error) {
+        res.render("dashboard/index.html.twig", {
+            uri: req.path,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patientList: patientList.patientList
         })
     }
 }
@@ -185,9 +277,15 @@ exports.updatePatient = async (req, res) => {
     const detailPath = "/" + originalUrl.split('/')[1];
     let prestataireList = await prestataireModel.find()
     let patient = await patientModel.findOne({ _id: req.params.patientID })
-    let newBirthday = new Date(patient.birthday);
-    let birthday = FormatDate(newBirthday)
+    let newBirthday = new Date(patient.birthday)
+    let birthday = newBirthday.toISOString().slice(0, 10);
     try {
+        if (req.body.nurse.trim() == "") {
+            req.body.nurse = ""
+        }
+        if (req.body.pharmacy.trim() == "") {
+            req.body.pharmacy = ""
+        }
         if (req.body.prestataire == "") {
             delete req.body.prestataire
             if (patient.prestataire.length != 0) {
@@ -201,7 +299,6 @@ exports.updatePatient = async (req, res) => {
         }
         await patientModel.updateOne({ _id: req.params.patientID }, req.body)
         res.redirect(`/detailPatient/${req.params.patientID}`)
-
     } catch (error) {
         res.render("doctorView/updatePatient/index.html.twig", {
             errors: error.errors,
@@ -213,7 +310,6 @@ exports.updatePatient = async (req, res) => {
             patient: patient,
             birthday: birthday,
             prestataireList: prestataireList
-
         })
     }
 }
@@ -230,7 +326,6 @@ exports.postDoctor = async (req, res) => {
             req.body.stamp = req.files['stamp'][0].filename;
             newDoctor.stamp = req.files['stamp'][0].filename;
         }
-
         newDoctor.validateSync();
         await newDoctor.save();
         res.redirect("/")
@@ -263,39 +358,64 @@ exports.postLogin = async (req, res) => {
     } catch (error) {
         res.render('doctorView/doctorConnexion/index.html.twig', {
             error: error
-
         })
     }
-
 }
 
-function FormatDate(date) {
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-    if (day < 10) {
-        day = "0" + day;
+exports.getMyPatient = async (req, res) => {
+    try {
+        if (req.query.search) {
+            const originalUrl = req.path;
+            const detailPath = "/" + originalUrl.split('/')[1];
+            let search = req.query.search.split(' ')
+            let patientList = await doctorModel.findById({ _id: req.session.user }).populate({
+                path: "patientList", match: {
+                    $or: [
+                        { name: { $regex: new RegExp(search[0], 'i') }, firstname: { $regex: new RegExp(search[1], 'i') } },
+                        { name: { $regex: new RegExp(search[1], 'i') }, firstname: { $regex: new RegExp(search[0], 'i') } },
+                        { name: { $regex: new RegExp(search[0], 'i') } },
+                        { firstname: { $regex: new RegExp(search[0], 'i') } },
+                    ]
+                }
+            })
+            res.render("dashboard/index.html.twig", {
+                uri: detailPath,
+                role: req.session.role,
+                userID: req.session.user,
+                userName: req.session.userName,
+                userFirstname: req.session.userFirstname,
+                patientList: patientList.patientList
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
+        res.render("dashboard/index.html.twig", {
+            uri: req.path,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patientList: patientList.patientList
+        })
     }
-    if (month < 10) {
-        month = "0" + month;
-    }
-
-    return year + "-" + month + "-" + day;
 }
 
-function genererMotDePasse() {
-    const longueur = 8;
-    const caracteresSpeciaux = '!@#$%^&*()-_=+';
-    const majuscule = String.fromCharCode(Math.floor(Math.random() * 26) + 65);
-    const minuscule = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
-    const chiffre = Math.floor(Math.random() * 10);
-    const caractereSpecial = caracteresSpeciaux[Math.floor(Math.random() * caracteresSpeciaux.length)];
-    const autresCaracteres = Array.from({ length: longueur - 4 }, () => {
-        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' + caracteresSpeciaux.replace('<', '').replace('>', '');
-        return caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-    }).join('');
-
-    const motDePasse = majuscule + minuscule + chiffre + caractereSpecial + autresCaracteres;
-
-    return motDePasse;
+exports.createMedication = async (req, res) => {
+    try {
+        const newMedication = new medicationModel({
+            name: "doliprane",
+            doctor: "662b6543af4717d9350c9689",
+            routeAdministration: "IV",
+            modeAdministration: "gravitée",
+            dilution: "100 ml",
+            infusionTime: "30 min"
+        })
+        newMedication.validateSync()
+        newMedication.save()
+        res.send('dsdskdnksd');
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
 }

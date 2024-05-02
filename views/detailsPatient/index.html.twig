@@ -14,8 +14,9 @@
 		{% include "layouts/sidebar.html.twig" %}
 		<div class="dashboardContainer">
 			<div id="breadcrumb">
-				<a href="/doctorDashboard">Dashboard</a>
+				<a {% if role == "doctor" %} href="/doctorDashboard" {% else %} href="/prestataireDashboard" {% endif %}>Dashboard</a>
 				<span>> Détails
+					{{patient.gender}}
 					{{patient.firstname}}
 					{{patient.name|upper}}</span>
 			</div>
@@ -23,7 +24,7 @@
 				<div class="titleDetail">
 					<p class="bold title">{{patient.gender}}
 						{{patient.firstname}}
-						{{patient.name}}</p>
+						{{patient.name|upper}}</p>
 					<p class="bold">Date de naissance :
 						<span class="formattedDate regular">{{patient.birthday}}</span>
 					</p>
@@ -61,7 +62,8 @@
 								{% if patient.prestataire is empty %}
 									Pas de prestataire renseigné
 								{% else %}
-									{{prestataire.societyName}}/{{prestataire.salesPersonName}} {{prestataire.salesPersonFirstname}}
+									{{prestataire.societyName}}/{{prestataire.salesPersonName}}
+									{{prestataire.salesPersonFirstname}}
 								{% endif %}
 							</span>
 						</p>
@@ -85,10 +87,24 @@
 						</p>
 					</div>
 				</div>
-				<div class="grandLine"></div>
-				<div class="treatmentList">
-					<p class="bold">Traitements :</p>
-				</div>
+				{% if patient.id in doctor.patientList %}
+				    <div class="grandLine"></div>
+						<div class="treatmentList">
+							<p class="bold">Traitements :</p>
+						</div>
+					{% else %}
+					<a href="/addPatient/{{patient.id}}" id="add_patient" class="button">
+							<span id="add_button"class="button__text">Add Patient</span>
+							<span id="icon_button" class="button__icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" viewbox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+									<line y2="19" y1="5" x2="12" x1="12"></line>
+									<line y2="12" y1="12" x2="19" x1="5"></line>
+								</svg>
+							</span>
+						</a>
+						
+				{% endif %}
+
 			</div>
 		</div>
 	</main>

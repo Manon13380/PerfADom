@@ -4,16 +4,16 @@
 		<div id="separation_logo"></div>
 		<h1>PerfADom</h1>
 	</div>
-	{% if  uri == '/doctorDashboard' %}
-		<form class="form_search" action="" method="post">
-			<input class="input_search" type="text" name="search" placeholder="Rechercher un patient">
+	{% if  uri == '/doctorDashboard' or uri == '/searchPatient' or uri == '//doctorDashboard?search' or uri == '//doctorDashboard?searchPatient' %}
+		<form class="form_search" action="/doctorDashboard" method="get">
+			<input class="input_search" type="text" name="searchPatient" placeholder="Rechercher un patient">
 			<button class="search"><img src="images/search.png" alt="images/search.png"></button>
 		</form>
 	{% endif %}
 	<div class="menuContainer">
 		{% if uri == '/doctorSubscribe' or uri == '/patientSubscribe' or uri == '/prestataireSubscribe' %}
 			<a class="link" href="/">Connexion</a>
-		{%  elseif uri == '/doctorDashboard' or uri == '/patientDashboard' or uri == '/prestataireDashboard' or uri == '/addPatient' or uri =="/detailPatient" or uri == "/updatePatientD" or uri == "/updatePatientP"%}
+		{%  elseif userID is defined %}
 			<a class="link" href="/">Deconnexion</a>
 		{% else %}
 			{% if uri == '/doctorConnexion' or uri == '/patientConnexion' or uri == '/prestataireConnexion' %}

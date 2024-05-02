@@ -1,0 +1,69 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	<title>PerfADom/Dashboard-Médecin</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleDashboard.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+{% block main %}
+	<main>
+		{% include "layouts/sidebar.html.twig" %}
+		<div class="dashboardContainer">
+			<div id="breadcrumb">
+				<a href="/doctorDashboard">Dashboard</a>
+				<a href="/detailPatient/{{patient._id}}">> Détails
+					{{patient.gender}}
+					{{patient.firstname}}
+					{{patient.name|upper}}</a>
+				<span>> Ajouter un traitement</span>
+			</div>
+			<section id="add_treatment">
+				<h2 class="sectionTitle">Ajouter un traitement</h2>
+				<form id="form_add_treatment" action="/createPatient" method="post">
+					<div>
+						<div>
+							<p>Date du début du traitement :
+								<input class="input inputDate" type="date"></p>
+						</div>
+						<div class="inputMedicationContainer">
+							<p>Médicaments :
+								<select class="select" id="medicationList" name="prestataire">
+									<option id="placeholder" value="" disabeled seleccted hidden data-placeholder>Choix du médicament</option>
+									{% for medication in medicationList %}
+										<option data-value='{{medication|json_encode}}' value='{{medication.id}}'>
+											{{medication.name}} {{medication.routeAdministration}} en {{medication.modeAdministration}} dans {{medication.dilution}} en {{medication.infusionTime}}
+										</option>
+									{% endfor %}
+								</select>
+							</p>
+							<a href="" class="button" id="add_medication">
+								<span id="add_medication_button" class="button__text">Add Médoc</span>
+								<span id="add_medication_icon" class="button__icon">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" viewbox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+										<line y2="19" y1="5" x2="12" x1="12"></line>
+										<line y2="12" y1="12" x2="19" x1="5"></line>
+									</svg>
+								</span>
+							</a>
+						</div>
+						<p>Liste des médicaments ajoutés au traitements :</p>
+						<div id="medContainer"></div>
+					</div>
+					<div class="createButton">
+						<button id="create_button">Créer</button>
+					</div>
+				</div>
+			</form>
+		</section>
+	</main>
+{% endblock %}
+{% block footer %}
+	{% include "layouts/footer.html.twig" %}
+{% endblock %}
+{% block script %}
+	<script src="/js/med.js"></script>
+{% endblock %}

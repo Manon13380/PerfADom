@@ -15,15 +15,17 @@
 		<div class="dashboardContainer ">
 			<div id="breadcrumb">
 				<a href="/doctorDashboard">Dashboard</a>
-				<span>> Détails
+				<a href="/detailPatient/{{patient._id}}">> Détails
+					{{patient.gender}}
 					{{patient.firstname}}
-					{{patient.name}}</span>
+					{{patient.name|upper}}</a>
+				<span class="bold">>Modifier ses informations</span>
 			</div>
-			<form class="detailPatient updatePatient" {% if role == "doctor" %} action ="/updatePatientD/{{patient._id}}" {% else %} action="/updatePatientP/{{patient._id}}" {% endif %} method="post">
+			<form class="detailPatient updatePatient" {% if role == "doctor" %} action="/updatePatientD/{{patient._id}}" {% else %} action="/updatePatientP/{{patient._id}}" {% endif %} method="post">
 				<div class="titleDetail">
 					<p class="bold title">{{patient.gender}}
 						{{patient.firstname}}
-						{{patient.name}}</p>
+						{{patient.name|upper}}</p>
 					<p class="bold">Date de naissance :
 						{% if role == "doctor" %}
 							<input class="input inputDate" type="date" name="birthday" value="{{birthday}}">
@@ -109,15 +111,20 @@
 				<div class="secondInformation">
 					<div class="inputRadio">
 						<p class="bold">Infirmier :</p>
-						<textarea class="input"  name="nurse">{{patient.nurse}}</textarea>
+						<textarea class="input" name="nurse">{{patient.nurse}}</textarea>
 					</div>
 					<div class="inputRadio">
 						<p class="bold">Pharmacie :</p>
-						<textarea class="input"  name="pharmacy" >{% if patient.pharmacy == "" %} {% else %} {{patient.pharmacy}} {% endif %}</textarea>
+						<textarea class="input" name="pharmacy">
+							{% if patient.pharmacy == "" %}
+								{% else %}
+									{{patient.pharmacy}}
+							{% endif %}
+						</textarea>
 					</div>
 				</div>
 			</div>
-			<button class="validateButton"><img src="/images/valider.png" alt="Valider"></button>
+			<button class="validateButton"><img id="validateButton" src="/images/valider.png" alt="Valider"></button>
 		</form>
 	</div>
 </div></div></main>{% endblock %}{% block footer %}{% include "layouts/footer.html.twig" %}{% endblock %}{% block script %}<script src="/js/dashboard.js"></script>{% endblock %}

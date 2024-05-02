@@ -4,13 +4,13 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     // convertir la date au format jj/mm/aaaa
-
     let dateElements = document.querySelectorAll(".formattedDate");
     dateElements.forEach(function (element) {
         let originalDate = element.innerText;
         let date = new Date(originalDate);
-        let formattedDate = formatDate(date);
-        element.innerText = formattedDate;
+        let formattedDate = date.toLocaleDateString('fr-FR');
+        formattedDate = formattedDate.replace(/\//g, '-');
+            element.innerText = formattedDate;
     })
 
 
@@ -36,19 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-function formatDate(date) {
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-    if (day < 10) {
-        day = "0" + day;
-    }
-    if (month < 10) {
-        month = "0" + month;
-    }
 
-    return day + "-" + month + "-" + year;
-}
 
 function formatPhoneNumber(phoneNumber) {
     return phoneNumber.substring(0, 2) + " " +

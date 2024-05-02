@@ -32,6 +32,7 @@ exports.getPatientDashboard = (req, res) => {
     }
 }
 
+
 exports.postPatient = async (req, res) => {
     try {
         prestataireList = await prestataireModel.find()
@@ -70,7 +71,6 @@ exports.postLogin = async (req, res) => {
             throw { mail: "Cet utilisateur n'est pas enregistré" }
         }
     } catch (error) {
-        console.log(error)
         res.render('patientView/patientConnexion/index.html.twig', {
             error: error
 

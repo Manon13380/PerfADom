@@ -489,10 +489,16 @@ input[type="date"] {
 }
 
 #medContainer {
+    max-width: 650px;
+    max-height: 400px;
+    overflow-y: scroll;
+    scrollbar-width: none;
     display: flex;
     flex-wrap: wrap;
+    justify-content:space-evenly;
+    row-gap: 30px;
     align-items: center;
-    gap: 30px
+    
 }
 
 .medicationCard {
@@ -500,7 +506,7 @@ input[type="date"] {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: ;
+    
 }
 
 .inputContainer {

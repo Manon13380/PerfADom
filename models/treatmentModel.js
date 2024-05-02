@@ -17,16 +17,13 @@ const treatmentShema = new mongoose.Schema({
         type : Date,
     },
     doctor : {
-        type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "doctor"
-        }]
     },
     patient: {
-        type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "patient"
-        }]
+        
     },
     model : {
         type : Boolean,

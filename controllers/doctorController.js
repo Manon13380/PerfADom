@@ -2,6 +2,8 @@ const doctorModel = require('../models/doctorModel')
 const prestataireModel = require('../models/prestataireModel')
 const patientModel = require('../models/patientModel')
 const medicationModel = require('../models/medicationModel')
+const timeMedicationModel = require('../models/time_medicationModel')
+const treatmentModel = require('../models/treatmentModel')
 const transporter = require('../customDepedencies/transporternodemailer');
 const bcrypt = require('bcrypt')
 const genererMotDePasse = require('../customDepedencies/generatePassword')
@@ -401,21 +403,58 @@ exports.getMyPatient = async (req, res) => {
     }
 }
 
-exports.createMedication = async (req, res) => {
+exports.AddTreatment = async (req, res) => {
     try {
-        const newMedication = new medicationModel({
-            name: "doliprane",
-            doctor: "662b6543af4717d9350c9689",
-            routeAdministration: "IV",
-            modeAdministration: "gravitée",
-            dilution: "100 ml",
-            infusionTime: "30 min"
+        const medicationIds = []
+        for (let i = 0; i < req.body.medication.length; i++) {
+            const newTimeMedication = new timeMedicationModel({
+                medication: req.body.medication[i],
+                quantityAmpoule: req.body.quantityAmpoule[i],
+                quantity: req.body.quantity[i],
+                periodQuantity: req.body.periodQuantity[i],
+                duration: req.body.duration[i],
+                periodDuration: req.body.periodDuration[i]
+            })
+            newTimeMedication.validateSync();
+            await newTimeMedication.save();
+            medicationIds.push(newTimeMedication._id);
+        }
+        const newTreatment = new treatmentModel({
+            name: "Traitement du " + new Date(),
+            medicationList: medicationIds,
+            startDate: req.body.startDate,
+            prescriptionDate: new Date(),
+            doctor: req.session.userID,
+            patient: req.params.patientID,
+            model: false
         })
-        newMedication.validateSync()
-        newMedication.save()
-        res.send('dsdskdnksd');
+        newTreatment.validateSync()
+        await newTreatment.save()
+        await patientModel.updateOne({ _id: req.params.patientID }, { $push: { treatmentList: newTreatment._id } });
+        res.redirect(`/detailPatient/${req.params.patientID}`)
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
         res.send(error)
     }
 }
+exports.getUserId = (req, res) => {
+    res.json({ userID: req.session.user });
+};
+// exports.createMedication = async (req, res) => {
+//     try {
+//         const newMedication = new medicationModel({
+//             name: "doliprane",
+//             doctor: "662b6543af4717d9350c9689",
+//             routeAdministration: "IV",
+//             modeAdministration: "gravitée",
+//             dilution: "100 ml",
+//             infusionTime: "30 min"
+//         })
+//         newMedication.validateSync()
+//         newMedication.save()
+//         res.send('dsdskdnksd');
+//     } catch (error) {
+//         console.log(error)
+//         res.send(error)
+//     }
+// }

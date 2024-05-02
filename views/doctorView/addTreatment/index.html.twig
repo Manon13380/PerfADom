@@ -23,11 +23,11 @@
 			</div>
 			<section id="add_treatment">
 				<h2 class="sectionTitle">Ajouter un traitement</h2>
-				<form id="form_add_treatment" action="/createPatient" method="post">
+				<form id="form_add_treatment" action="/addTreatment/{{patient.id}}" method="post">
 					<div>
 						<div>
 							<p>Date du début du traitement :
-								<input class="input inputDate" type="date"></p>
+								<input class="input inputDate" type="date" name="startDate"></p>
 						</div>
 						<div class="inputMedicationContainer">
 							<p>Médicaments :

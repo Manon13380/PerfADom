@@ -78,10 +78,8 @@ const patientSchema = new mongoose.Schema({
         }
     },
     prestataire: {
-        type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "prestataire"
-        }]
     },
     password: {
         type: String,

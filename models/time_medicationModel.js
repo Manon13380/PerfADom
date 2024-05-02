@@ -26,3 +26,6 @@ const time_medicationShema = new mongoose.Schema({
         required : [true, "La période est requise "]
     }
 })
+
+const timeMedicationModel = mongoose.model("time_medications", time_medicationShema )
+module.exports = timeMedicationModel

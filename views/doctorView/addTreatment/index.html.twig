@@ -35,12 +35,19 @@
 									<option id="placeholder" value="" disabeled seleccted hidden data-placeholder>Choix du médicament</option>
 									{% for medication in medicationList %}
 										<option data-value='{{medication|json_encode}}' value='{{medication.id}}'>
-											{{medication.name}} {{medication.routeAdministration}} en {{medication.modeAdministration}} dans {{medication.dilution}} en {{medication.infusionTime}}
+											{{medication.name}}
+											{{medication.routeAdministration}}
+											en
+											{{medication.modeAdministration}}
+											dans
+											{{medication.dilution}}
+											en
+											{{medication.infusionTime}}
 										</option>
 									{% endfor %}
 								</select>
 							</p>
-							<a href="" class="button" id="add_medication">
+							<a class="button" id="add_medication" onclick="openModal()">
 								<span id="add_medication_button" class="button__text">Add Médoc</span>
 								<span id="add_medication_icon" class="button__icon">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" viewbox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
@@ -59,11 +66,39 @@
 				</div>
 			</form>
 		</section>
-	</main>
+		<!-- Modale addMedication -->
+		<div class="modal">
+			<div class="modal-content">
+				<span id="closeModalAdd" class="close" onclick="closeModal()">x</span>
+				<h3>Création d'un nouveau médicament</h2>
+				<form id="formAddMed" method='post' action='/createMedication/{{patient._id}}'>
+					<input class="input " type="text" id="name" name="name" placeholder="Nom du médicament" required>
+					{% if condition %}{% endif %}
+					<select name="routeAdministration" class="select" required>
+						{% for option in optionRouteArray %}
+							<option value="{{option}}">{{option}}</option>
+				        {% endfor %}
+			        </select>
+					<select name="modeAdministration" class="select" required>
+						{% for option in optionModeArray %}
+							<option value="{{option}}">{{option}}</option>
+				        {% endfor %}
+			        </select>
+					<select name="dilution" class="select" required>
+						{% for option in optionDilutionArray %}
+							<option value="{{option}}">{{option}}</option>
+				        {% endfor %}
+			        </select>
+					<select name="infusionTime" class="select" required>
+						{% for option in optionTimeArray %}
+							<option value="{{option}}">{{option}}</option>
+				        {% endfor %}
+			        </select>
+			        <button class="medButton">Créer</button>
+		        </form>
+	        </div>
+        </div>
+</main>
 {% endblock %}
-{% block footer %}
-	{% include "layouts/footer.html.twig" %}
-{% endblock %}
-{% block script %}
-	<script src="/js/med.js"></script>
-{% endblock %}
+{% block footer %}{% include "layouts/footer.html.twig" %}{% endblock %}
+{% block script %}<script src="/js/med.js"></script>{% endblock %}

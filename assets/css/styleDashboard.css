@@ -480,6 +480,9 @@ input[type="date"] {
     background-color: rgba(95, 172, 211, 0.5);
 
 }
+#medicationList{
+    color: rgba(27, 75, 101, 1)
+}
 
 .inputMedicationContainer {
     display: flex;
@@ -495,18 +498,18 @@ input[type="date"] {
     scrollbar-width: none;
     display: flex;
     flex-wrap: wrap;
-    justify-content:space-evenly;
+    justify-content: space-evenly;
     row-gap: 30px;
     align-items: center;
-    
+
 }
 
 .medicationCard {
     display: flex;
-    flex-direction: column;
     justify-content: center;
+    gap: 20px;
     align-items: center;
-    
+
 }
 
 .inputContainer {
@@ -517,23 +520,118 @@ input[type="date"] {
 }
 
 .inputQuantityAmpoule {
-    width:40px;
+    width: 40px;
 }
 
 #inputPeriodQuantity,
-#inputPeriodDuration{
-    width :70px
+#inputPeriodDuration {
+    width: 70px;
+    color: rgba(27, 75, 101, 1)
 }
-.informationCard{
-    background-color:rgb(95, 172, 211);
+
+.informationCard {
+    background-color: rgb(95, 172, 211);
     border-radius: 10px;
     width: 200px;
+    min-height: 225px;
     text-align: center;
     position: relative;
 }
-.delete_Button{
+
+.delete_Button {
     position: absolute;
     right: 0;
-    top:0;
+    top: 0;
     cursor: pointer;
+}
+
+.buttonMedicContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+/* css modal update medic */
+
+.modal {
+    display: none;
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); 
+    justify-content: center;
+    align-items: center; 
+}
+
+.formUpdateMed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 10px;
+}
+
+.modal-content {
+    background-color: rgb(202, 235, 255);
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid rgb(202, 235, 255);
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    position: absolute;
+    right: 5px;
+    top: -5px;
+    color: darkred;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal input {
+    color: rgba(27, 75, 101, 1);
+    width: 160px;
+}
+
+.modal select {
+    color: rgba(27, 75, 101, 1);
+    width: 160px;
+}
+
+.medButton{
+    background-color: rgb(95, 172, 211);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px 5px 10px;
+    cursor: pointer;
+}
+
+/* css modale add medic */
+
+#formAddMed{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 20px;
 }

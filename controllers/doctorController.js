@@ -43,6 +43,10 @@ exports.getDoctorSubscribe = (req, res) => {
 
 exports.getAddTreatment = async (req, res) => {
     try {
+        let optionRouteArray = ["VVP", "VVC", "PAC", "PICCLINE", "MIDLINE", "S/Cut"]
+        let optionDilutionArray = ["Aucune Dilution", "NACL0.9% 50ml", "NACL0.9% 100ml", "NACL0.9% 250ml", "NACL0.9% 500ml", "G5% 50ml", "G5% 100ml", "G5% 250ml", "G5% 500ml", "BioG5% 50ml", "BioG5% 100ml", "BioG5% 250ml", "BioG5% 500ml"]
+        let optionModeArray = ["Gravité", "Diffuseur", "Pompe"]
+        let optionTimeArray = ["30 minutes", "1 heure", "2 heures 30", "5 heures", "12 heures", "24 heures"]
         const doctor = await doctorModel.findById(req.session.user)
         const originalUrl = req.path;
         const detailPath = "/" + originalUrl.split('/')[1];
@@ -58,7 +62,11 @@ exports.getAddTreatment = async (req, res) => {
             patient: patient,
             prestataire: prestataire,
             medicationList: medicationList,
-            doctor: doctor
+            doctor: doctor,
+            optionRouteArray: optionRouteArray,
+            optionDilutionArray: optionDilutionArray,
+            optionModeArray: optionModeArray,
+            optionTimeArray: optionTimeArray
         }
         )
     } catch (error) {
@@ -201,7 +209,7 @@ exports.getUpdatePatient = async (req, res) => {
 
 exports.deletePatient = async (req, res) => {
     try {
-        let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
+        await doctorModel.findById({ _id: req.session.user }).populate("patientList")
         await doctorModel.updateOne({ _id: req.session.user }, { $pull: { patientList: req.params.patientID } })
         res.redirect("/doctorDashboard")
     } catch (error) {
@@ -213,6 +221,17 @@ exports.deletePatient = async (req, res) => {
             userFirstname: req.session.userFirstname,
             patientList: patientList.patientList
         })
+    }
+}
+
+exports.deleteMedication = async (req, res) => {
+    try {
+        let deleteMedication = await medicationModel.deleteOne({ _id: req.params.medID })
+        await doctorModel.updateOne({ _id: req.session.user }, { $pull: { medicationList: req.params.medID } })
+        res.json(deleteMedication)
+    } catch (error) {
+        console.log(error.message)
+        res.json(error)
     }
 }
 
@@ -440,21 +459,25 @@ exports.AddTreatment = async (req, res) => {
 exports.getUserId = (req, res) => {
     res.json({ userID: req.session.user });
 };
-// exports.createMedication = async (req, res) => {
-//     try {
-//         const newMedication = new medicationModel({
-//             name: "doliprane",
-//             doctor: "662b6543af4717d9350c9689",
-//             routeAdministration: "IV",
-//             modeAdministration: "gravitée",
-//             dilution: "100 ml",
-//             infusionTime: "30 min"
-//         })
-//         newMedication.validateSync()
-//         newMedication.save()
-//         res.send('dsdskdnksd');
-//     } catch (error) {
-//         console.log(error)
-//         res.send(error)
-//     }
-// }
+
+exports.updateMedication = async (req, res) => {
+    try {
+        await medicationModel.updateOne({ _id: req.params.medId }, req.body)
+        res.redirect(`/addTreatment/${req.params.patientID}`)
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
+}
+exports.createMedication = async (req, res) => {
+    try {
+        const newMedication = new medicationModel(req.body)
+        newMedication.doctor = req.session.user
+        newMedication.validateSync()
+        newMedication.save()
+        res.redirect(`/addTreatment/${req.params.patientID}`);
+    } catch (error) {
+        console.log(error)
+        res.render('addTreatment/index.html.twig')
+    }
+}

@@ -48,8 +48,8 @@
 						</a>
 					{% endif %}
 				</div>
-				{% else %}
-					<h2 class="sectionTitle">Patient(s) recherché(s)</h2>
+			{% else %}
+				<h2 class="sectionTitle">Patient(s) recherché(s)</h2>
 			{% endif %}
 			{% if patientList is empty %}
 				{% if uri == "//doctorDashboard?searchPatient" or  uri == "//doctorDashboard?search"%}
@@ -80,6 +80,7 @@
 								<a id="details" href="/detailPatient/{{patient._id}}">Détails</a>
 							</div>
 							{% if uri != "/searchPatient" %}
+							
 								<a href="/deletePatient/{{patient._id}}"><img class="deleteButton" src="/images/logosupprimer.png" alt="supprimer"></a>
 							{% endif %}
 

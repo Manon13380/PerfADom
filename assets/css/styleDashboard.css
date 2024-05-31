@@ -424,8 +424,51 @@ input[type="date"] {
     margin-left: 70px
 }
 
+.treatmentList {
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
 #add_patient {
     background-color: rgba(95, 172, 211, 0.5);
+}
+
+.treatmentCard{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgb(95, 172, 211) ;
+    border-radius: 10px;
+    width:90% ;
+    margin: auto;
+    color : rgb(243, 242, 255);
+    position: relative;
+}
+.deleteTreatmentButton {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    cursor: pointer;
+}
+
+#detailsTreatment {
+    text-decoration: none;
+    background-color: rgb(202, 235, 255);
+    color: rgb(27, 75, 101) ;
+    padding: 10px 15px 10px 15px;
+    border-radius: 10px;
+}
+
+.updateTreatmentButton{
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    right: 20px;
+    top: -10px;
+    cursor: pointer;
+}
+#treatmentName{
+    margin-left: 20px;
 }
 
 /* css update patient */
@@ -521,6 +564,8 @@ input[type="date"] {
 
 .inputQuantityAmpoule {
     width: 40px;
+    color: rgba(27, 75, 101, 1);
+    font-weight: bold;
 }
 
 #inputPeriodQuantity,

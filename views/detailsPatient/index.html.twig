@@ -88,21 +88,57 @@
 					</div>
 				</div>
 				{% if patient.id in doctor.patientList %}
-				    <div class="grandLine"></div>
-						<div class="treatmentList">
-							<p class="bold">Traitements :</p>
-						</div>
-					{% else %}
+					<div class="grandLine"></div>
+					<div class="treatmentList">
+						<p class="bold">Traitements :</p>
+						{% if patient.treatmentList %}
+							{% for treatment in patient.treatmentList %}
+								<div class="treatmentCard">
+									<div>
+										<h4 id="treatmentName">{{treatment.name}}
+											du Dr
+											{{treatment.doctor.name|upper}}
+											{{treatment.doctor.firstname}}</h4>
+										<p>Date de Début :
+											{% if treatment.startDate != "Invalid Date" %}
+												<span class="formattedDate">
+													{{treatment.startDate}}</span>
+												{% else %}
+                                                 <span> Date non défini</span>
+											{% endif %}
+
+										</p>
+									</div>
+									<p>(
+										{% for medication in treatment.medicationList %}
+											{{ medication.medication.name }}
+											{% if not loop.last %},
+											{% endif %}
+										{% endfor %}
+										)</p>
+									{% if treatment.doctor._id == userID %}
+										<a href="/deleteTreatment/{{patient._id}}/{{treatment._id}}"><img class="deleteTreatmentButton" src="/images/logosupprimer.png" alt="supprimer"></a>
+									{% endif %}
+									<div class="detailContainer">
+										<button class="updateTreatmentButton" href=""><img src="\images\updateLogo.png" alt=""></button>
+										<a id="detailsTreatment" href="">Détails</a>
+									</div>
+								</div>
+							{% endfor %}
+
+						{% endif %}
+					</div>
+				{% else %}
 					<a href="/addPatient/{{patient.id}}" id="add_patient" class="button">
-							<span id="add_button"class="button__text">Add Patient</span>
-							<span id="icon_button" class="button__icon">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" viewbox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
-									<line y2="19" y1="5" x2="12" x1="12"></line>
-									<line y2="12" y1="12" x2="19" x1="5"></line>
-								</svg>
-							</span>
-						</a>
-						
+						<span id="add_button" class="button__text">Add Patient</span>
+						<span id="icon_button" class="button__icon">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" viewbox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+								<line y2="19" y1="5" x2="12" x1="12"></line>
+								<line y2="12" y1="12" x2="19" x1="5"></line>
+							</svg>
+						</span>
+					</a>
+
 				{% endif %}
 
 			</div>

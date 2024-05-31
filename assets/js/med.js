@@ -1,5 +1,6 @@
 const listingmed = document.querySelector('#medicationList')
 const medContainer = document.querySelector("#medContainer")
+const formContainer = document.querySelector('.inputMedicationContainer')
 let modal = document.querySelector('.modal')
 let closeModalAdd = document.querySelector('#closeModalAdd')
 

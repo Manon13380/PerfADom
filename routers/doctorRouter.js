@@ -14,6 +14,7 @@ doctorRouter.get("/detailPatient/:patientID",authguard, doctorController.getDeta
 doctorRouter.get("/updatePatientD/:patientID",authguard, doctorController.getUpdatePatient)
 doctorRouter.get('/addPatient',authguard, doctorController.addPatient)
 doctorRouter.get('/addTreatment/:patientID', authguard, doctorController.getAddTreatment)
+doctorRouter.get('/deleteTreatment/:patientID/:treatmentID', authguard , doctorController.deleteTreatment)
 doctorRouter.delete('/deleteMedication/:medID', doctorController.deleteMedication)
 doctorRouter.get('/get-user-session', authguard, doctorController.getUserId)
 doctorRouter.post('/updateMedication/:medId/:patientID', authguard, doctorController.updateMedication)

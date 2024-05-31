@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt')
 const genererMotDePasse = require('../customDepedencies/generatePassword')
 
 
-
+// affichage des pages
 exports.getHomepage = (req, res) => {
     try {
         req.session.destroy();
@@ -74,14 +74,7 @@ exports.getAddTreatment = async (req, res) => {
     }
 }
 
-exports.getmedicationList = async (req, res) => {
-    try {
-        const med = await medicationModel.findById(req.params.id)
-        res.json(med)
-    } catch (error) {
-        res.send(error)
-    }
-}
+
 
 exports.getDoctorDashboard = async (req, res) => {
     try {
@@ -159,27 +152,7 @@ exports.getAddPatient = async (req, res) => {
     }
 }
 
-exports.getDetailPatient = async (req, res) => {
-    try {
-        const doctor = await doctorModel.findById(req.session.user)
-        const originalUrl = req.path;
-        const detailPath = "/" + originalUrl.split('/')[1];
-        let patient = await patientModel.findOne({ _id: req.params.patientID })
-        let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
-        res.render("detailsPatient/index.html.twig", {
-            uri: detailPath,
-            role: req.session.role,
-            userID: req.session.user,
-            userName: req.session.userName,
-            userFirstname: req.session.userFirstname,
-            patient: patient,
-            prestataire: prestataire,
-            doctor: doctor
-        })
-    } catch (error) {
-        res.send(error)
-    }
-}
+
 
 exports.getUpdatePatient = async (req, res) => {
     try {
@@ -207,134 +180,9 @@ exports.getUpdatePatient = async (req, res) => {
     }
 }
 
-exports.deletePatient = async (req, res) => {
-    try {
-        await doctorModel.findById({ _id: req.session.user }).populate("patientList")
-        await doctorModel.updateOne({ _id: req.session.user }, { $pull: { patientList: req.params.patientID } })
-        res.redirect("/doctorDashboard")
-    } catch (error) {
-        res.render("dashboard/index.html.twig", {
-            uri: req.path,
-            role: req.session.role,
-            userID: req.session.user,
-            userName: req.session.userName,
-            userFirstname: req.session.userFirstname,
-            patientList: patientList.patientList
-        })
-    }
-}
 
-exports.deleteMedication = async (req, res) => {
-    try {
-        let deleteMedication = await medicationModel.deleteOne({ _id: req.params.medID })
-        await doctorModel.updateOne({ _id: req.session.user }, { $pull: { medicationList: req.params.medID } })
-        res.json(deleteMedication)
-    } catch (error) {
-        console.log(error.message)
-        res.json(error)
-    }
-}
 
-exports.postPatient = async (req, res) => {
-    try {
-        prestataireList = await prestataireModel.find()
-        if (req.body.prestataire === "") {
-            delete req.body.prestataire
-        }
-        let newPatient = new patientModel(req.body)
-        let password = genererMotDePasse()
-        newPatient.password = password
-        newPatient.validateSync();
-        await newPatient.save();
-        await prestataireModel.updateOne({ _id: req.body.prestataire }, { $push: { patientList: newPatient._id } });
-        await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: newPatient._id } });
-        const mailOptions = {
-            from: process.env.USER_MAIL,
-            to: process.env.USER_PERSO_MAIL,
-            subject: "PerfADom : Identifiants de connexion",
-            text: "Bonjour " + newPatient.gender + " " + newPatient.name + " " + newPatient.firstname + ",\n\n"
-                + "Votre médecin vous a créé un compte sur PerfADom. \n\n"
-                + "Voici vos identifants pour vos connecter : \n\n"
-                + "Identifiant : " + newPatient.mail + "\n"
-                + "Mot de passe : " + password + "\n\n"
-                + "Cordialement \n\n L'équipe PerfADom"
-        };
-        await transporter.sendMail(mailOptions);
-        res.redirect("/doctorDashboard")
-    } catch (error) {
-        console.log(error);
-        res.render("doctorview/addPatient/index.html.twig", {
-            errors: error.errors,
-            role: req.session.role,
-            userID: req.session.user,
-            userName: req.session.userName,
-            userFirstname: req.session.userFirstname,
-            errors: error.errors,
-            uri: req.path,
-            prestataireList: prestataireList,
-        })
-    }
-}
-
-exports.addPatient = async (req, res) => {
-    try {
-        let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
-        await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: req.params.patientID } })
-        res.redirect("/doctorDashboard")
-    } catch (error) {
-        res.render("dashboard/index.html.twig", {
-            uri: req.path,
-            role: req.session.role,
-            userID: req.session.user,
-            userName: req.session.userName,
-            userFirstname: req.session.userFirstname,
-            patientList: patientList.patientList
-        })
-    }
-}
-
-exports.updatePatient = async (req, res) => {
-    const originalUrl = req.path;
-    const detailPath = "/" + originalUrl.split('/')[1];
-    let prestataireList = await prestataireModel.find()
-    let patient = await patientModel.findOne({ _id: req.params.patientID })
-    let newBirthday = new Date(patient.birthday)
-    let birthday = newBirthday.toISOString().slice(0, 10);
-    try {
-        if (req.body.nurse.trim() == "") {
-            req.body.nurse = ""
-        }
-        if (req.body.pharmacy.trim() == "") {
-            req.body.pharmacy = ""
-        }
-        if (req.body.prestataire == "") {
-            delete req.body.prestataire
-            if (patient.prestataire.length != 0) {
-                await prestataireModel.updateOne({ _id: patient.prestataire[0] }, { $pull: { patientList: req.params.patientID } });
-                await patientModel.updateOne({ _id: req.params.patientID }, { $pull: { prestataire: patient.prestataire[0] } });
-            }
-        }
-        else if (req.body.prestataire != patient.prestataire) {
-            await prestataireModel.updateOne({ _id: patient.prestataire[0] }, { $pull: { patientList: req.params.patientID } });
-            await prestataireModel.updateOne({ _id: req.body.prestataire }, { $push: { patientList: req.params.patientID } });
-        }
-        await patientModel.updateOne({ _id: req.params.patientID }, req.body)
-        res.redirect(`/detailPatient/${req.params.patientID}`)
-    } catch (error) {
-        res.render("doctorView/updatePatient/index.html.twig", {
-            errors: error.errors,
-            uri: detailPath,
-            role: req.session.role,
-            userID: req.session.user,
-            userName: req.session.userName,
-            userFirstname: req.session.userFirstname,
-            patient: patient,
-            birthday: birthday,
-            prestataireList: prestataireList
-        })
-    }
-}
-
+// CRUD Docteur
 exports.postDoctor = async (req, res) => {
     try {
         let newDoctor = new doctorModel(req.body)
@@ -383,6 +231,319 @@ exports.postLogin = async (req, res) => {
     }
 }
 
+exports.addPatient = async (req, res) => {
+    try {
+        let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
+        await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: req.params.patientID } })
+        res.redirect("/doctorDashboard")
+    } catch (error) {
+        res.render("dashboard/index.html.twig", {
+            uri: req.path,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patientList: patientList.patientList
+        })
+    }
+}
+
+
+// CRUD patient
+exports.postPatient = async (req, res) => {
+    try {
+        prestataireList = await prestataireModel.find()
+        if (req.body.prestataire === "") {
+            delete req.body.prestataire
+        }
+        let newPatient = new patientModel(req.body)
+        let password = genererMotDePasse()
+        newPatient.password = password
+        newPatient.validateSync();
+        await newPatient.save();
+        await prestataireModel.updateOne({ _id: req.body.prestataire }, { $push: { patientList: newPatient._id } });
+        await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: newPatient._id } });
+        const mailOptions = {
+            from: process.env.USER_MAIL,
+            to: process.env.USER_PERSO_MAIL,
+            subject: "PerfADom : Identifiants de connexion",
+            text: "Bonjour " + newPatient.gender + " " + newPatient.name + " " + newPatient.firstname + ",\n\n"
+                + "Votre médecin vous a créé un compte sur PerfADom. \n\n"
+                + "Voici vos identifants pour vos connecter : \n\n"
+                + "Identifiant : " + newPatient.mail + "\n"
+                + "Mot de passe : " + password + "\n\n"
+                + "Cordialement \n\n L'équipe PerfADom"
+        };
+        await transporter.sendMail(mailOptions);
+        res.redirect("/doctorDashboard")
+    } catch (error) {
+        console.log(error);
+        res.render("doctorview/addPatient/index.html.twig", {
+            errors: error.errors,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            errors: error.errors,
+            uri: req.path,
+            prestataireList: prestataireList,
+        })
+    }
+}
+exports.getDetailPatient = async (req, res) => {
+    try {
+        const doctor = await doctorModel.findById(req.session.user)
+        const originalUrl = req.path;
+        const detailPath = "/" + originalUrl.split('/')[1];
+        let patient = await patientModel.findOne({ _id: req.params.patientID }).populate({
+            path: 'treatmentList',
+            populate: [
+                {
+                    path: 'medicationList',
+                    populate: {
+                        path: 'medication'
+                    }    
+                },
+                {
+                    path: 'doctor', 
+                     select: 'name firstname'
+                }
+            ]
+        });
+        let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
+        res.render("detailsPatient/index.html.twig", {
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient: patient,
+            prestataire: prestataire,
+            doctor: doctor
+        })
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+exports.updatePatient = async (req, res) => {
+    const originalUrl = req.path;
+    const detailPath = "/" + originalUrl.split('/')[1];
+    let prestataireList = await prestataireModel.find()
+    let patient = await patientModel.findOne({ _id: req.params.patientID })
+    let newBirthday = new Date(patient.birthday)
+    let birthday = newBirthday.toISOString().slice(0, 10);
+    try {
+        if (req.body.nurse.trim() == "") {
+            req.body.nurse = ""
+        }
+        if (req.body.pharmacy.trim() == "") {
+            req.body.pharmacy = ""
+        }
+        if (req.body.prestataire == "") {
+            delete req.body.prestataire
+            if (patient.prestataire.length != 0) {
+                await prestataireModel.updateOne({ _id: patient.prestataire[0] }, { $pull: { patientList: req.params.patientID } });
+                await patientModel.updateOne({ _id: req.params.patientID }, { $pull: { prestataire: patient.prestataire[0] } });
+            }
+        }
+        else if (req.body.prestataire != patient.prestataire) {
+            await prestataireModel.updateOne({ _id: patient.prestataire[0] }, { $pull: { patientList: req.params.patientID } });
+            await prestataireModel.updateOne({ _id: req.body.prestataire }, { $push: { patientList: req.params.patientID } });
+        }
+        await patientModel.updateOne({ _id: req.params.patientID }, req.body)
+        res.redirect(`/detailPatient/${req.params.patientID}`)
+    } catch (error) {
+        res.render("doctorView/updatePatient/index.html.twig", {
+            errors: error.errors,
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient: patient,
+            birthday: birthday,
+            prestataireList: prestataireList
+        })
+    }
+}
+exports.deletePatient = async (req, res) => {
+    try {
+        await doctorModel.findById({ _id: req.session.user }).populate("patientList")
+        await doctorModel.updateOne({ _id: req.session.user }, { $pull: { patientList: req.params.patientID } })
+        res.redirect("/doctorDashboard")
+    } catch (error) {
+        res.render("dashboard/index.html.twig", {
+            uri: req.path,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patientList: patientList.patientList
+        })
+    }
+}
+
+// CRUD Traitement
+
+exports.AddTreatment = async (req, res) => {
+    let optionRouteArray = ["VVP", "VVC", "PAC", "PICCLINE", "MIDLINE", "S/Cut"]
+    let optionDilutionArray = ["Aucune Dilution", "NACL0.9% 50ml", "NACL0.9% 100ml", "NACL0.9% 250ml", "NACL0.9% 500ml", "G5% 50ml", "G5% 100ml", "G5% 250ml", "G5% 500ml", "BioG5% 50ml", "BioG5% 100ml", "BioG5% 250ml", "BioG5% 500ml"]
+    let optionModeArray = ["Gravité", "Diffuseur", "Pompe"]
+    let optionTimeArray = ["30 minutes", "1 heure", "2 heures 30", "5 heures", "12 heures", "24 heures"]
+    const doctor = await doctorModel.findById(req.session.user)
+    const originalUrl = req.path;
+    const detailPath = "/" + originalUrl.split('/')[1];
+    let patient = await patientModel.findOne({ _id: req.params.patientID })
+    const medicationList = await medicationModel.find();
+    let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
+    try {
+        const medicationIds = []
+        for (let i = 0; i < req.body.medication.length; i++) {
+            const newTimeMedication = new timeMedicationModel({
+                medication: req.body.medication[i],
+                quantityAmpoule: req.body.quantityAmpoule[i],
+                quantity: req.body.quantity[i],
+                periodQuantity: req.body.periodQuantity[i],
+                duration: req.body.duration[i],
+                periodDuration: req.body.periodDuration[i]
+            })
+            newTimeMedication.validateSync();
+            await newTimeMedication.save();
+            medicationIds.push(newTimeMedication._id);
+        }
+        //transformer la date en format jj/mm/aa
+        let date = new Date();
+        let formattedDate = date.toLocaleDateString('fr-FR');
+        formattedDate = formattedDate.replace(/\//g, '-');
+
+        const newTreatment = new treatmentModel({
+            name: "Traitement du " + formattedDate,
+            medicationList: medicationIds,
+            startDate: req.body.startDate,
+            prescriptionDate: new Date(),
+            doctor: req.session.user,
+            patient: req.params.patientID,
+            model: false
+        })
+        newTreatment.validateSync()
+        await newTreatment.save()
+        await patientModel.updateOne({ _id: req.params.patientID }, { $push: { treatmentList: newTreatment._id } });
+        res.redirect(`/detailPatient/${req.params.patientID}`)
+    } catch (error) {
+        res.render("doctorView/addTreatment/index.html.twig", {
+            errors :error.errors,
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient: patient,
+            prestataire: prestataire,
+            medicationList: medicationList,
+            doctor: doctor,
+            optionRouteArray: optionRouteArray,
+            optionDilutionArray: optionDilutionArray,
+            optionModeArray: optionModeArray,
+            optionTimeArray: optionTimeArray
+        })
+    }
+}
+
+exports.getmedicationList = async (req, res) => {
+    try {
+        const med = await medicationModel.findById(req.params.id)
+        res.json(med)
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+exports.getUserId = (req, res) => {
+    res.json({ userID: req.session.user });
+};
+
+exports.deleteTreatment = async (req, res) => {
+        const doctor = await doctorModel.findById(req.session.user)
+        const originalUrl = req.path;
+        const detailPath = "/" + originalUrl.split('/')[1];
+        let patient = await patientModel.findOne({ _id: req.params.patientID }).populate({
+            path: 'treatmentList',
+            populate: [
+                {
+                    path: 'medicationList',
+                    populate: {
+                        path: 'medication'
+                    }    
+                },
+                {
+                    path: 'doctor', 
+                     select: 'name firstname'
+                }
+            ]
+        });
+        let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
+    try {
+        const treatment = await treatmentModel.findById(req.params.treatmentID);
+        await treatmentModel.deleteOne({_id : req.params.treatmentID})
+        await patientModel.updateOne({ _id: req.params.patientID }, { $pull: { treatmentList: req.params.treatmentID } })
+        const timeMedicationIds = treatment.medicationList;
+        console.log(timeMedicationIds)
+        await timeMedicationModel.deleteMany({ _id: { $in: timeMedicationIds } });
+        res.redirect(`/detailPatient/${req.params.patientID}`)
+    } catch (error) {
+        console.log(error.message)
+        res.render("detailsPatient/index.html.twig", {
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient: patient,
+            prestataire: prestataire,
+            doctor: doctor
+        })
+    }
+}
+
+//CRUD médicament
+
+exports.createMedication = async (req, res) => {
+    try {
+        const newMedication = new medicationModel(req.body)
+        newMedication.doctor = req.session.user
+        newMedication.validateSync()
+        newMedication.save()
+        await doctorModel.updateOne({ _id: req.session.user }, { $push: { medicationList: newMedication._id } })
+        res.redirect(`/addTreatment/${req.params.patientID}`);
+    } catch (error) {
+        console.log(error)
+        res.render('addTreatment/index.html.twig')
+    }
+}
+exports.updateMedication = async (req, res) => {
+    try {
+        await medicationModel.updateOne({ _id: req.params.medId }, req.body)
+        res.redirect(`/addTreatment/${req.params.patientID}`)
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
+}
+
+exports.deleteMedication = async (req, res) => {
+    try {
+        let deleteMedication = await medicationModel.deleteOne({ _id: req.params.medID })
+        await doctorModel.updateOne({ _id: req.session.user }, { $pull: { medicationList: req.params.medID } })
+        res.json(deleteMedication)
+    } catch (error) {
+        console.log(error.message)
+        res.json(error)
+    }
+}
+
+
+
 exports.getMyPatient = async (req, res) => {
     try {
         if (req.query.search) {
@@ -422,62 +583,6 @@ exports.getMyPatient = async (req, res) => {
     }
 }
 
-exports.AddTreatment = async (req, res) => {
-    try {
-        const medicationIds = []
-        for (let i = 0; i < req.body.medication.length; i++) {
-            const newTimeMedication = new timeMedicationModel({
-                medication: req.body.medication[i],
-                quantityAmpoule: req.body.quantityAmpoule[i],
-                quantity: req.body.quantity[i],
-                periodQuantity: req.body.periodQuantity[i],
-                duration: req.body.duration[i],
-                periodDuration: req.body.periodDuration[i]
-            })
-            newTimeMedication.validateSync();
-            await newTimeMedication.save();
-            medicationIds.push(newTimeMedication._id);
-        }
-        const newTreatment = new treatmentModel({
-            name: "Traitement du " + new Date(),
-            medicationList: medicationIds,
-            startDate: req.body.startDate,
-            prescriptionDate: new Date(),
-            doctor: req.session.userID,
-            patient: req.params.patientID,
-            model: false
-        })
-        newTreatment.validateSync()
-        await newTreatment.save()
-        await patientModel.updateOne({ _id: req.params.patientID }, { $push: { treatmentList: newTreatment._id } });
-        res.redirect(`/detailPatient/${req.params.patientID}`)
-    } catch (error) {
-        console.log(error.message)
-        res.send(error)
-    }
-}
-exports.getUserId = (req, res) => {
-    res.json({ userID: req.session.user });
-};
 
-exports.updateMedication = async (req, res) => {
-    try {
-        await medicationModel.updateOne({ _id: req.params.medId }, req.body)
-        res.redirect(`/addTreatment/${req.params.patientID}`)
-    } catch (error) {
-        console.log(error)
-        res.send(error)
-    }
-}
-exports.createMedication = async (req, res) => {
-    try {
-        const newMedication = new medicationModel(req.body)
-        newMedication.doctor = req.session.user
-        newMedication.validateSync()
-        newMedication.save()
-        res.redirect(`/addTreatment/${req.params.patientID}`);
-    } catch (error) {
-        console.log(error)
-        res.render('addTreatment/index.html.twig')
-    }
-}
+
+

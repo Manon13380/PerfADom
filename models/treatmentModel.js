@@ -7,7 +7,7 @@ const treatmentShema = new mongoose.Schema({
     medicationList : {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "time_medication"
+            ref: "time_medications"
         }]
     },
     startDate: {

@@ -1,5 +1,7 @@
 const prestataireModel = require('../models/prestataireModel')
 const patientModel = require('../models/patientModel')
+const doctorModel = require('../models/doctorModel')
+const treatmentModel = require('../models/treatmentModel')
 const bcrypt = require('bcrypt')
 
 
@@ -88,21 +90,37 @@ exports.getUpdatePatient = async (req, res) => {
 }
 exports.getDetailPatient = async (req, res) => {
     try {
+        const doctor = await doctorModel.findById(req.session.user)
         const originalUrl = req.path;
         const detailPath = "/" + originalUrl.split('/')[1];
-        let patient = await patientModel.findOne({ _id: req.params.patientID })
+        let patient = await patientModel.findOne({ _id: req.params.patientID }).populate({
+            path: 'treatmentList',
+            populate: [
+                {
+                    path: 'medicationList',
+                    populate: {
+                        path: 'medication'
+                    }    
+                },
+                {
+                    path: 'doctor', 
+                     select: 'name firstname'
+                }
+            ]
+        });
         let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
-        res.render("prestataireView/detailsPatient/index.html.twig", {
+        res.render("detailsPatient/index.html.twig", {
             uri: detailPath,
             role: req.session.role,
-            userSociety: req.session.userSociety,
             userID: req.session.user,
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
             patient: patient,
-            prestataire: prestataire
+            prestataire: prestataire,
+            doctor: doctor
         })
     } catch (error) {
+        console.log(error)
         res.send(error)
     }
 }
@@ -175,6 +193,36 @@ exports.postLogin = async (req, res) => {
             error: error
 
         })
+    }
+}
+
+exports.getDetailsTreatment = async (req, res) => {
+    try {
+        const doctor = await doctorModel.findById(req.session.user)
+        const originalUrl = req.path;
+        const detailPath = "/" + originalUrl.split('/')[1];
+        let patient = await patientModel.findOne({ _id: req.params.patientID })
+        let treatment = await treatmentModel.findOne({_id : req.params.treatmentID}).populate({
+            path: 'medicationList',
+            populate: {
+                path: 'medication'
+            }
+        }).populate({
+            path: 'doctor',
+            select: 'name firstname'
+        });
+        res.render("detailsTreatment/index.html.twig", {
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient: patient,
+            treatment : treatment,
+            doctor: doctor
+        })
+    } catch (error) {
+        res.send(error)
     }
 }
 

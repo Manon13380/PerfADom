@@ -1,1 +1,64 @@
-<p>Dashboard Patient</p>
+{% extends "base.html.twig" %}
+{% block title %}
+	<title>PerfADom/Dashboard-Médecin</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleDashboard.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+{% block main %}
+	<main>
+		{% include "layouts/sidebar.html.twig" %}
+		<div class="dashboardContainer">
+			<div id="breadcrumb">
+				<span>Dashboard</span>
+			</div>
+			<h2 class="sectionTitle">Mes traitements</h2>
+			<div class="treatmentList">
+				{% if patient.treatmentList %}
+					{% for treatment in patient.treatmentList %}
+						<div class="treatmentPatientCard">
+							<div>
+								<h4 id="treatmentName">{{treatment.name}}
+									du Dr
+									{{treatment.doctor.name|upper}}
+									{{treatment.doctor.firstname}}</h4>
+								<p>Date de Début :
+									{% if treatment.startDate != "Invalid Date" %}
+										<span class="formattedDate">
+											{{treatment.startDate}}</span>
+									{% else %}
+										<span>
+											Date non défini</span>
+									{% endif %}
+
+								</p>
+							</div>
+							<p>(
+								{% for medication in treatment.medicationList %}
+									{{ medication.medication.name }}
+									{% if not loop.last %},
+									{% endif %}
+								{% endfor %}
+								)</p>
+
+							<div class="detailContainer">
+								<a id="detailsTreatment" href="/detailTreatmentPat/{{treatment._id}}">Détails</a>
+							</div>
+						</div>
+					{% endfor %}
+
+				{% endif %}
+			</div>
+		</div>
+	</main>
+{% endblock %}
+{% block footer %}
+	{% include "layouts/footer.html.twig" %}
+{% endblock %}
+{% block script %}
+	<script src="/js/dashboard.js"></script>
+{% endblock %}

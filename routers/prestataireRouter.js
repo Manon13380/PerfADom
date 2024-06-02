@@ -6,6 +6,8 @@ prestataireRouter.get('/prestataireSubscribe', prestataireController.getPrestata
 prestataireRouter.get('/prestataireDashboard',authguard, prestataireController.getPrestataireDashboard)
 prestataireRouter.get('/prestataireConnexion', prestataireController.getPrestataireConnexion)
 prestataireRouter.get("/updatePatientP/:patientID",authguard, prestataireController.getUpdatePatient)
+prestataireRouter.get("/detailPatientP/:patientID",authguard,prestataireController.getDetailPatient)
+prestataireRouter.get("/detailTreatmentP/:patientID/:treatmentID",authguard, prestataireController.getDetailsTreatment)
 prestataireRouter.post('/prestataireSubscribe', prestataireController.postPrestataire)
 prestataireRouter.post('/prestataireDashboard', prestataireController.postLogin)
 prestataireRouter.post("/updatePatientP/:patientID", prestataireController.updatePatient)

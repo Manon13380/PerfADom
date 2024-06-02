@@ -680,3 +680,30 @@ input[type="date"] {
     align-items: center;
     row-gap: 20px;
 }
+
+/*css detailstreatment */
+
+.medicationList {
+    height: 400px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    margin-left: 50px;
+   
+}
+
+.medication{
+    margin-bottom: 50px;
+}
+
+/*  css dashboard patient */
+
+.treatmentPatientCard{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgb(95, 172, 211) ;
+    border-radius: 10px;
+    width:60% ;
+    margin: auto;
+    color : rgb(243, 242, 255);
+}

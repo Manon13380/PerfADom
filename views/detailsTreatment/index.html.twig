@@ -1,0 +1,89 @@
+{% extends "base.html.twig" %}
+{% block title %}
+	<title>PerfADom/Dashboard-Médecin</title>
+{% endblock %}
+{% block link %}
+	<link rel="stylesheet" href="/css/styleDashboard.css">
+{% endblock %}
+
+{% block header %}
+	{% include "layouts/header.html.twig" %}
+{% endblock %}
+{% block main %}
+	<main>
+		{% include "layouts/sidebar.html.twig" %}
+		<div class="dashboardContainer">
+			<div id="breadcrumb">
+				<a {% if role == "doctor" %} href="/doctorDashboard" {% elseif role =='prestataire' %} href="/prestataireDashboard" {% else %} href="/patientDashboard" {% endif %}>Dashboard</a>
+				{% if role == 'doctor' or role =='prestataire' %}
+					<a href='/detailPatient/{{patient._id}}'>> Détails
+						{{patient.gender}}
+						{{patient.firstname}}
+						{{patient.name|upper}}</a>
+				{% endif %}
+				<span>>
+					{{treatment.name}}
+					du Dr
+					{{treatment.doctor.name}}
+					{{treatment.doctor.firstname}}
+				</span>
+			</div>
+			<div class="detailPatient">
+				<div class="titleDetail">
+					<p class="bold title">{{patient.gender}}
+						{{patient.firstname}}
+						{{patient.name|upper}}</p>
+					<h3>
+						{{treatment.name}}
+						du Dr
+						{{treatment.doctor.name}}
+						{{treatment.doctor.firstname}}</h3>
+					<p>Début du traitement le
+						<strong>
+							<span class='formattedDate'>{{treatment.startDate}}
+							</span>
+						</strong>
+					</p>
+					<p>
+						<em>(Il y a
+							{{treatment.medicationList|length}}
+							médicament(s) dans ce traitement)</em>
+					</p>
+				</div>
+				<div class="medicationList">
+					{% for medication in treatment.medicationList %}
+						<div class="medication">
+							<p>{{loop.index}}.
+								<strong>{{medication.medication.name}}</strong>
+								:
+								{{medication.quantityAmpoule}}
+								ampoule(s)/flacon(s)
+								{% if medication.medication.dilution != "Aucune Dilution" %}à diluer dans
+									{{medication.medication.dilution}}
+								{% endif %}
+								{{medication.quantity}}
+								fois par
+								{{medication.periodQuantity}}
+								pendant
+								{{medication.duration}}
+								{{medication.periodDuration}}
+							</p>
+							<p>Durée d'une perfusion :
+								{{medication.medication.infusionTime}}</p>
+							<p>Voie d'abord :
+								{{medication.medication.routeAdministration}}</p>
+							<p>Mode d'Administration :
+								{{medication.medication.modeAdministration}}</p>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+
+		</main>
+	{% endblock %}
+	{% block footer %}
+		{% include "layouts/footer.html.twig" %}
+	{% endblock %}
+	{% block script %}
+		<script src="/js/dashboard.js"></script>
+	{% endblock %}

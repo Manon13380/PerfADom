@@ -87,21 +87,29 @@
 				{% if condition %}{% endif %}
 				<select name="routeAdministration" class="select" required>
 					{% for option in optionRouteArray %}
-						<option value="{{option}}"></option>
-					{{option}}
-				</option>
+						<option value="{{option}}">	{{option}}</option>
+				
 			{% endfor %}
 		</select>
 		<select name="modeAdministration" class="select" required>
 			{% for option in optionModeArray %}
-				<option value="{{option}}"></option>
-			{{option}}
-		</option>
+				<option value="{{option}}">	{{option}}</option>
+		
+		
 	{% endfor %}
 </select>
 <select name="dilution" class="select" required>
 	{% for option in optionDilutionArray %}
-		<option value="{{option}}"></option>
-	{{option}}
-</option>{% endfor %}</select><select name="infusionTime" class="select" required>{% for option in optionTimeArray %}
-<option value="{{option}}"></option>{{option}}</option>{% endfor %}</select><button class="medButton">Créer</button></form></div></div></main>{% endblock %}{% block footer %}{% include "layouts/footer.html.twig" %}{% endblock %}{% block script %}<script src="/js/med.js"></script>{% endblock %}
+		<option value="{{option}}">{{option}}</option>
+{% endfor %}</select>
+
+<select name="infusionTime" class="select" required>
+{% for option in optionTimeArray %}
+<option value="{{option}}">{{option}}</option>
+{% endfor %}</select>
+<button class="medButton">Créer</button>
+</form>
+</div>
+</div>
+</main>{% endblock %}{% block footer %}{% include "layouts/footer.html.twig" %}{% endblock %}
+{% block script %}<script src="/js/med.js"></script>{% endblock %}

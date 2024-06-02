@@ -5,6 +5,7 @@ const authguard = require('../customDepedencies/authguardPatient')
 patientRouter.get('/patientSubscribe', patientController.getPatientSubscribe)
 patientRouter.get('/patientDashboard',authguard, patientController.getPatientDashboard)
 patientRouter.get('/patientConnexion', patientController.getPatientConnexion)
+patientRouter.get("/detailTreatmentPat/:treatmentID",authguard, patientController.getDetailsTreatment)
 patientRouter.post('/patientSubscribe', patientController.postPatient)
 patientRouter.post('/patientDashboard', patientController.postLogin)
 

@@ -1,4 +1,4 @@
-const prestataireModelModel = require('../models/prestataireModel')
+const prestataireModel = require('../models/prestataireModel')
 const session = require('express-session')
 
 const authguard = async (req, res, next) => {
@@ -11,7 +11,7 @@ const authguard = async (req, res, next) => {
         }
         throw new Error("utilisateur non connecté");
     } catch (error) {
-        res.status(401).render('doctorView/doctorConnexion/index.html.twig', {
+        res.status(401).render('prestataireView/prestataireConnexion/index.html.twig', {
             errorAuth: error.message
         })
     }

@@ -1,5 +1,6 @@
 const patientModel = require("../models/patientModel")
 const prestataireModel = require('../models/prestataireModel')
+const treatmentModel = require('../models/treatmentModel')
 const bcrypt = require('bcrypt')
 
 exports.getPatientSubscribe = async (req, res) => {
@@ -22,10 +23,61 @@ exports.getPatientConnexion = (req, res) => {
         res.send(error)
     }
 }
-exports.getPatientDashboard = (req, res) => {
+exports.getPatientDashboard = async (req, res) => {
     try {
+        const originalUrl = req.originalUrl;
+        const detailPath = "/" + originalUrl.split('=')[0];
+        let patient = await patientModel.findOne({ _id: req.session.user}).populate({
+            path: 'treatmentList',
+            populate: [
+                {
+                    path: 'medicationList',
+                    populate: {
+                        path: 'medication'
+                    }    
+                },
+                {
+                    path: 'doctor', 
+                     select: 'name firstname'
+                }
+            ]
+        });
         res.render("patientView/patientDashboard/index.html.twig", {
-            uri: req.path
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient : patient
+        })
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+
+exports.getDetailsTreatment = async (req, res) => {
+    try {
+        const originalUrl = req.path;
+        const detailPath = "/" + originalUrl.split('/')[1];
+        let patient = await patientModel.findOne({ _id: req.session.user})
+        let treatment = await treatmentModel.findOne({_id : req.params.treatmentID}).populate({
+            path: 'medicationList',
+            populate: {
+                path: 'medication'
+            }
+        }).populate({
+            path: 'doctor',
+            select: 'name firstname'
+        });
+        res.render("detailsTreatment/index.html.twig", {
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient: patient,
+            treatment : treatment,
         })
     } catch (error) {
         res.send(error)

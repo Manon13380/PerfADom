@@ -232,8 +232,9 @@ exports.postLogin = async (req, res) => {
 }
 
 exports.addPatient = async (req, res) => {
+    let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
     try {
-        let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
+        
         await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: req.params.patientID } })
         res.redirect("/doctorDashboard")
     } catch (error) {
@@ -343,12 +344,12 @@ exports.updatePatient = async (req, res) => {
         if (req.body.prestataire == "") {
             delete req.body.prestataire
             if (patient.prestataire.length != 0) {
-                await prestataireModel.updateOne({ _id: patient.prestataire[0] }, { $pull: { patientList: req.params.patientID } });
-                await patientModel.updateOne({ _id: req.params.patientID }, { $pull: { prestataire: patient.prestataire[0] } });
+                await prestataireModel.updateOne({ _id: patient.prestataire }, { $pull: { patientList: req.params.patientID } });
+                await patientModel.updateOne({ _id: req.params.patientID }, { $pull: { prestataire: patient.prestataire } });
             }
         }
         else if (req.body.prestataire != patient.prestataire) {
-            await prestataireModel.updateOne({ _id: patient.prestataire[0] }, { $pull: { patientList: req.params.patientID } });
+            await prestataireModel.updateOne({ _id: patient.prestataire }, { $pull: { patientList: req.params.patientID } });
             await prestataireModel.updateOne({ _id: req.body.prestataire }, { $push: { patientList: req.params.patientID } });
         }
         await patientModel.updateOne({ _id: req.params.patientID }, req.body)
@@ -447,6 +448,36 @@ exports.AddTreatment = async (req, res) => {
             optionModeArray: optionModeArray,
             optionTimeArray: optionTimeArray
         })
+    }
+}
+
+exports.getDetailsTreatment = async (req, res) => {
+    try {
+        const doctor = await doctorModel.findById(req.session.user)
+        const originalUrl = req.path;
+        const detailPath = "/" + originalUrl.split('/')[1];
+        let patient = await patientModel.findOne({ _id: req.params.patientID })
+        let treatment = await treatmentModel.findOne({_id : req.params.treatmentID}).populate({
+            path: 'medicationList',
+            populate: {
+                path: 'medication'
+            }
+        }).populate({
+            path: 'doctor',
+            select: 'name firstname'
+        });
+        res.render("detailsTreatment/index.html.twig", {
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient: patient,
+            treatment : treatment,
+            doctor: doctor
+        })
+    } catch (error) {
+        res.send(error)
     }
 }
 

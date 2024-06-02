@@ -87,7 +87,7 @@
 						</p>
 					</div>
 				</div>
-				{% if patient.id in doctor.patientList %}
+				{% if patient.id in doctor.patientList or patient.id in prestataire.patientList %}
 					<div class="grandLine"></div>
 					<div class="treatmentList">
 						<p class="bold">Traitements :</p>
@@ -103,8 +103,9 @@
 											{% if treatment.startDate != "Invalid Date" %}
 												<span class="formattedDate">
 													{{treatment.startDate}}</span>
-												{% else %}
-                                                 <span> Date non défini</span>
+											{% else %}
+												<span>
+													Date non défini</span>
 											{% endif %}
 
 										</p>
@@ -118,10 +119,14 @@
 										)</p>
 									{% if treatment.doctor._id == userID %}
 										<a href="/deleteTreatment/{{patient._id}}/{{treatment._id}}"><img class="deleteTreatmentButton" src="/images/logosupprimer.png" alt="supprimer"></a>
+										{# <button class="updateTreatmentButton" href=""><img src="\images\updateLogo.png" alt=""></button> #}
 									{% endif %}
 									<div class="detailContainer">
-										<button class="updateTreatmentButton" href=""><img src="\images\updateLogo.png" alt=""></button>
-										<a id="detailsTreatment" href="">Détails</a>
+										{% if role =="doctor" %}
+											<a id="detailsTreatment" href="/detailTreatment/{{patient._id}}/{{treatment._id}}">Détails</a>
+											{% else %}
+												<a id="detailsTreatment" href="/detailTreatmentP/{{patient._id}}/{{treatment._id}}">Détails</a>
+										{% endif %}
 									</div>
 								</div>
 							{% endfor %}

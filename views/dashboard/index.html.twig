@@ -77,10 +77,15 @@
 								</p>
 							</div>
 							<div class="detailContainer">
-								<a id="details" href="/detailPatient/{{patient._id}}">Détails</a>
+								{% if role == "doctor" %}
+									<a id="details" href="/detailPatient/{{patient._id}}">Détails</a>
+								{% else %}
+									<a id="details" href="/detailPatientP/{{patient._id}}">Détails</a>
+								{% endif %}
+
 							</div>
 							{% if uri != "/searchPatient" %}
-							
+
 								<a href="/deletePatient/{{patient._id}}"><img class="deleteButton" src="/images/logosupprimer.png" alt="supprimer"></a>
 							{% endif %}
 

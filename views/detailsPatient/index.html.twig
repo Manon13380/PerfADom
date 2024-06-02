@@ -110,13 +110,11 @@
 
 										</p>
 									</div>
-									<p>(
+									<p>
 										{% for medication in treatment.medicationList %}
-											{{ medication.medication.name }}
-											{% if not loop.last %},
-											{% endif %}
+											{{ medication.medication.name }} <br>
 										{% endfor %}
-										)</p>
+										</p>
 									{% if treatment.doctor._id == userID %}
 										<a href="/deleteTreatment/{{patient._id}}/{{treatment._id}}"><img class="deleteTreatmentButton" src="/images/logosupprimer.png" alt="supprimer"></a>
 										{# <button class="updateTreatmentButton" href=""><img src="\images\updateLogo.png" alt=""></button> #}

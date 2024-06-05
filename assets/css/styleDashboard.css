@@ -425,8 +425,12 @@ input[type="date"] {
 }
 
 .treatmentList {
+    height: 400px;
     overflow-y: scroll;
     scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
 }
 
 #add_patient {
@@ -703,7 +707,8 @@ input[type="date"] {
     align-items: center;
     background-color: rgb(95, 172, 211) ;
     border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
     width:60% ;
-    margin: auto;
     color : rgb(243, 242, 255);
 }

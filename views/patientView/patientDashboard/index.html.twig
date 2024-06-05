@@ -37,13 +37,11 @@
 
 								</p>
 							</div>
-							<p>(
+							<p>
 								{% for medication in treatment.medicationList %}
-									{{ medication.medication.name }}
-									{% if not loop.last %},
-									{% endif %}
+									{{ medication.medication.name }} <br>	
 								{% endfor %}
-								)</p>
+								</p>
 
 							<div class="detailContainer">
 								<a id="detailsTreatment" href="/detailTreatmentPat/{{treatment._id}}">Détails</a>

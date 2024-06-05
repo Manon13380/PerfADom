@@ -100,14 +100,10 @@
 											{{treatment.doctor.name|upper}}
 											{{treatment.doctor.firstname}}</h4>
 										<p>Date de Début :
-											{% if treatment.startDate != "Invalid Date" %}
+							
 												<span class="formattedDate">
 													{{treatment.startDate}}</span>
-											{% else %}
-												<span>
-													Date non défini</span>
-											{% endif %}
-
+									
 										</p>
 									</div>
 									<p>

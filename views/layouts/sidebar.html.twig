@@ -21,12 +21,12 @@
 					<p class="bold">{{patient.gender}}
 						{{patient.firstname}}
 						{{patient.name|upper}}</p>
-					{% if patient.id in doctor.patientList %}
+					{% if patient.id in doctor.patientList or patient.id in prestataire.patientList %}
 						<a {% if role == "doctor" %} href="/updatePatientD/{{patient._id}}" {% else %} href="/updatePatientP/{{patient._id}}" {% endif %} {% if uri == "/updatePatientD" or uri == "/updatePatientP" %} class="bold" {% endif %}>Modifier ses informations</a>
 						{% if role == "doctor" %}
 							<br>
 							<br>
-							<a href="/addTreatment/{{patient._id}}" {% if uri == "/addTreatment"  %} class="bold" {% endif %}>Ajouter un traitement</a>
+							<a href="/addTreatment/{{patient._id}}" {% if uri == "/addTreatment" %} class="bold" {% endif %}>Ajouter un traitement</a>
 						{% endif %}
 					{% endif %}
 
@@ -37,10 +37,9 @@
 	</div>
 	<div class="linklistContainer">
 		<div class="line"></div>
-		<div class="linkList">
-			{# {% if role == "doctor" %}
-				<a class="margin" href="">Mes modèles</a>
-			{% endif %} #}
+		<div class="linkList">{# {% if role == "doctor" %}
+							<a class="margin" href="">Mes modèles</a>
+						{% endif %} #}
 			{# <a class="margin" href="">Mon compte</a> #}
 		</div>
 	</div>

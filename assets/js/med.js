@@ -15,20 +15,6 @@ listingmed.addEventListener('change', async (el) => {
 })
 
 
-// async function deleteMedication(id, event) {
-//     let res = await fetch(`/deleteMedication/${id}`, { method: "DELETE" });
-//     if (res.ok) {
-//         let medicationCard = event.target.closest('.medicationCard');
-//         if (medicationCard) {
-//             medicationCard.remove();
-//         } else {
-//             console.error("Impossible de trouver l'élément parent de la carte de médicament.");
-//         }
-//     } else {
-//         console.error("Échec de la suppression du médicament.");
-//     }
-// }
-
 let createMedButton = document.getElementById('createMed');
 createMedButton.addEventListener('click', async (event) => {
     event.preventDefault();
@@ -64,7 +50,6 @@ createMedButton.addEventListener('click', async (event) => {
 })
 
 //fonction pour créer une fiche medoc
-
 function displayMedCard(med) {
     const medicationCard = document.createElement('div')
     medicationCard.classList.add('medicationCard')
@@ -102,25 +87,6 @@ function displayMedCard(med) {
     let paraInfusion = document.createElement('p')
     paraInfusion.innerText = "Durée : " + med.infusionTime
     informationCard.appendChild(paraInfusion)
-    // if (med.doctor == userID) {
-    //     let buttonMedicContainer = document.createElement('div')
-    //     buttonMedicContainer.classList.add('buttonMedicContainer')
-    //     informationCard.appendChild(buttonMedicContainer)
-    //     let updateButton = document.createElement('img')
-    //     updateButton.classList.add("cursor")
-    //     updateButton.src = "../images/updateLogo.png"
-    //     updateButton.addEventListener('click', function () {
-    //         createAndShowModal(med);
-    //     });
-    //     buttonMedicContainer.appendChild(updateButton)
-    //     let deleteButton = document.createElement('img')
-    //     deleteButton.src = "../images/logosupprimer.png"
-    //     deleteButton.classList.add("cursor")
-    //     deleteButton.addEventListener('click', async (event) => {
-    //         deleteMedication(med._id, event)
-    //     })
-    //     buttonMedicContainer.appendChild(deleteButton)
-    // }
     let inputsContainer = document.createElement('div')
     inputsContainer.classList.add('inputsContainer')
     medicationCard.appendChild(inputsContainer)
@@ -210,107 +176,6 @@ function displayMedCard(med) {
 
 }
 
-
-// Fonction pour créer et afficher la modale modification médicament
-// function createAndShowModal(med) {
-//     let pathname = window.location.pathname;
-//     let parts = pathname.split('/').filter(part => part);
-//     let patientID = parts[parts.length - 1];
-//     let optionRouteArray = ["VVP", "VVC", "PAC", "PICCLINE", "MIDLINE", "S/Cut"]
-//     let optionDilutionArray = ["Aucune Dilution", "NACL0.9% 50ml", "NACL0.9% 100ml", "NACL0.9% 250ml", "NACL0.9% 500ml", "G5% 50ml", "G5% 100ml", "G5% 250ml", "G5% 500ml", "BioG5% 50ml", "BioG5% 100ml", "BioG5% 250ml", "BioG5% 500ml"]
-//     let optionModeArray = ["Gravité", "Diffuseur", "Pompe"]
-//     let optionTimeArray = ["30 minutes", "1 heure", "2 heures 30", "5 heures", "12 heures", "24 heures"]
-//     const modalContainer = document.createElement('div');
-//     modalContainer.classList.add('modal');
-//     const modalContent = document.createElement('div');
-//     modalContent.classList.add('modal-content');
-//     const closeButton = document.createElement('span');
-//     closeButton.classList.add('close');
-//     closeButton.innerHTML = 'x';
-//     const form = document.createElement('form');
-//     form.classList.add('formUpdateMed')
-//     form.method = "post"
-//     form.action = `/updateMedication/${med._id}/${patientID}`
-//     const inputName = document.createElement('input');
-//     inputName.value = med.name;
-//     inputName.name = "name"
-//     inputName.classList.add('select')
-//     form.appendChild(inputName);
-//     const inputRoute = document.createElement('select');
-//     inputRoute.name = "routeAdministration"
-//     inputRoute.classList.add('select')
-//     form.appendChild(inputRoute);
-//     for (let i = 0; i < optionRouteArray.length; i++) {
-//         let option = document.createElement('option')
-//         option.value = optionRouteArray[i]
-//         option.innerText = optionRouteArray[i]
-//         if (med.routeAdministration == optionRouteArray[i]) {
-//             option.selected = "selected"
-//         }
-//         inputRoute.appendChild(option)
-//     }
-//     const inputMode = document.createElement('select');
-//     inputMode.name = "modeAdministration"
-//     inputMode.classList.add('select')
-//     for (let i = 0; i < optionModeArray.length; i++) {
-//         let option = document.createElement('option')
-//         option.value = optionModeArray[i]
-//         option.innerText = optionModeArray[i]
-//         if (med.modeAdministration == optionModeArray[i]) {
-//             option.selected = "selected"
-//         }
-//         inputMode.appendChild(option)
-//     }
-//     form.appendChild(inputMode);
-//     const inputDilution = document.createElement('select');
-//     inputDilution.name = "dilution"
-//     inputDilution.classList.add('select')
-//     form.appendChild(inputDilution);
-//     for (let i = 0; i < optionDilutionArray.length; i++) {
-//         let option = document.createElement('option')
-//         option.value = optionDilutionArray[i]
-//         option.innerText = optionDilutionArray[i]
-//         if (med.dilution == optionDilutionArray[i]) {
-//             option.selected = "selected"
-//         }
-//         inputDilution.appendChild(option)
-//     }
-//     const inputInfusion = document.createElement('select');
-//     inputInfusion.name = "infusionTime"
-//     inputInfusion.classList.add('select')
-//     form.appendChild(inputInfusion);
-//     for (let i = 0; i < optionTimeArray.length; i++) {
-//         let option = document.createElement('option')
-//         option.value = optionTimeArray[i]
-//         option.innerText = optionTimeArray[i]
-//         if (med.infusionTime == optionTimeArray[i]) {
-//             option.selected = "selected"
-//         }
-//         inputInfusion.appendChild(option)
-//     }
-//     const submitButton = document.createElement('button');
-//     submitButton.innerText = 'Modifier';
-//     submitButton.classList.add('medButton')
-//     form.appendChild(submitButton);
-//     modalContent.appendChild(closeButton);
-//     modalContent.appendChild(form);
-//     modalContainer.appendChild(modalContent);
-//     document.body.appendChild(modalContainer);
-
-//     modalContainer.style.display = 'flex';
-
-
-//     closeButton.addEventListener('click', function () {
-//         modalContainer.style.display = 'none';
-//     });
-
-//     window.addEventListener('click', function (event) {
-//         if (event.target === modalContainer) {
-//             modalContainer.style.display = 'none';
-//         }
-//     });
-// }
-
 function openModal() {
     modal.style.display = "flex";
 
@@ -324,3 +189,8 @@ window.addEventListener('click', function (event) {
         modal.style.display = 'none';
     }
 });
+
+function deleteMed(button) {
+    const medicationCard = button.closest('.medicationCard');
+    medicationCard.remove();
+}

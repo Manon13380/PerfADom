@@ -21,6 +21,7 @@ exports.getHomepage = (req, res) => {
     }
 }
 
+
 exports.getDoctorConnexion = (req, res) => {
     try {
         res.render("doctorView/doctorConnexion/index.html.twig", {
@@ -53,6 +54,15 @@ exports.getAddTreatment = async (req, res) => {
         let patient = await patientModel.findOne({ _id: req.params.patientID })
         const medicationList = await medicationModel.find();
         let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
+        let treatment;
+        if (detailPath == "/updateTreatment") {
+            treatment = await treatmentModel.findById({ _id: req.params.treatmentID }).populate({
+                path: 'medicationList',
+                populate: {
+                    path: 'medication'
+                }
+            })
+        }
         res.render("doctorView/addTreatment/index.html.twig", {
             uri: detailPath,
             role: req.session.role,
@@ -66,10 +76,12 @@ exports.getAddTreatment = async (req, res) => {
             optionRouteArray: optionRouteArray,
             optionDilutionArray: optionDilutionArray,
             optionModeArray: optionModeArray,
-            optionTimeArray: optionTimeArray
+            optionTimeArray: optionTimeArray,
+            currentTreatment: treatment
         }
         )
     } catch (error) {
+        console.log(error)
         res.send(error)
     }
 }
@@ -234,7 +246,6 @@ exports.postLogin = async (req, res) => {
 exports.addPatient = async (req, res) => {
     let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
     try {
-        
         await doctorModel.updateOne({ _id: req.session.user }, { $push: { patientList: req.params.patientID } })
         res.redirect("/doctorDashboard")
     } catch (error) {
@@ -303,11 +314,11 @@ exports.getDetailPatient = async (req, res) => {
                     path: 'medicationList',
                     populate: {
                         path: 'medication'
-                    }    
+                    }
                 },
                 {
-                    path: 'doctor', 
-                     select: 'name firstname'
+                    path: 'doctor',
+                    select: 'name firstname'
                 }
             ]
         });
@@ -433,7 +444,7 @@ exports.AddTreatment = async (req, res) => {
         res.redirect(`/detailPatient/${req.params.patientID}`)
     } catch (error) {
         res.render("doctorView/addTreatment/index.html.twig", {
-            errors :error.errors,
+            errors: error.errors,
             uri: detailPath,
             role: req.session.role,
             userID: req.session.user,
@@ -457,7 +468,7 @@ exports.getDetailsTreatment = async (req, res) => {
         const originalUrl = req.path;
         const detailPath = "/" + originalUrl.split('/')[1];
         let patient = await patientModel.findOne({ _id: req.params.patientID })
-        let treatment = await treatmentModel.findOne({_id : req.params.treatmentID}).populate({
+        let treatment = await treatmentModel.findOne({ _id: req.params.treatmentID }).populate({
             path: 'medicationList',
             populate: {
                 path: 'medication'
@@ -473,7 +484,7 @@ exports.getDetailsTreatment = async (req, res) => {
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
             patient: patient,
-            treatment : treatment,
+            treatment: treatment,
             doctor: doctor
         })
     } catch (error) {
@@ -495,28 +506,28 @@ exports.getUserId = (req, res) => {
 };
 
 exports.deleteTreatment = async (req, res) => {
-        const doctor = await doctorModel.findById(req.session.user)
-        const originalUrl = req.path;
-        const detailPath = "/" + originalUrl.split('/')[1];
-        let patient = await patientModel.findOne({ _id: req.params.patientID }).populate({
-            path: 'treatmentList',
-            populate: [
-                {
-                    path: 'medicationList',
-                    populate: {
-                        path: 'medication'
-                    }    
-                },
-                {
-                    path: 'doctor', 
-                     select: 'name firstname'
+    const doctor = await doctorModel.findById(req.session.user)
+    const originalUrl = req.path;
+    const detailPath = "/" + originalUrl.split('/')[1];
+    let patient = await patientModel.findOne({ _id: req.params.patientID }).populate({
+        path: 'treatmentList',
+        populate: [
+            {
+                path: 'medicationList',
+                populate: {
+                    path: 'medication'
                 }
-            ]
-        });
-        let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
+            },
+            {
+                path: 'doctor',
+                select: 'name firstname'
+            }
+        ]
+    });
+    let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
     try {
         const treatment = await treatmentModel.findById(req.params.treatmentID);
-        await treatmentModel.deleteOne({_id : req.params.treatmentID})
+        await treatmentModel.deleteOne({ _id: req.params.treatmentID })
         await patientModel.updateOne({ _id: req.params.patientID }, { $pull: { treatmentList: req.params.treatmentID } })
         const timeMedicationIds = treatment.medicationList;
         console.log(timeMedicationIds)
@@ -552,26 +563,6 @@ exports.createMedication = async (req, res) => {
         res.render('addTreatment/index.html.twig')
     }
 }
-// exports.updateMedication = async (req, res) => {
-//     try {
-//         await medicationModel.updateOne({ _id: req.params.medId }, req.body)
-//         res.redirect(`/addTreatment/${req.params.patientID}`)
-//     } catch (error) {
-//         console.log(error)
-//         res.send(error)
-//     }
-// }
-
-// exports.deleteMedication = async (req, res) => {
-//     try {
-//         let deleteMedication = await medicationModel.deleteOne({ _id: req.params.medID })
-//         await doctorModel.updateOne({ _id: req.session.user }, { $pull: { medicationList: req.params.medID } })
-//         res.json(deleteMedication)
-//     } catch (error) {
-//         console.log(error.message)
-//         res.json(error)
-//     }
-// }
 
 
 

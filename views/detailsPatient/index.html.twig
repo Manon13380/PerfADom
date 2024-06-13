@@ -113,7 +113,7 @@
 										</p>
 									{% if treatment.doctor._id == userID %}
 										<a href="/deleteTreatment/{{patient._id}}/{{treatment._id}}"><img class="deleteTreatmentButton" src="/images/logosupprimer.png" alt="supprimer"></a>
-										{# <button class="updateTreatmentButton" href=""><img src="\images\updateLogo.png" alt=""></button> #}
+										<a class="updateTreatmentButton" href="/updateTreatment/{{patient._id}}/{{treatment._id}}"><img src="\images\updateLogo.png" alt=""></a>
 									{% endif %}
 									<div class="detailContainer">
 										{% if role =="doctor" %}

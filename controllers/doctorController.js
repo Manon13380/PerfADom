@@ -546,32 +546,32 @@ exports.createMedication = async (req, res) => {
         newMedication.validateSync()
         newMedication.save()
         await doctorModel.updateOne({ _id: req.session.user }, { $push: { medicationList: newMedication._id } })
-        res.redirect(`/addTreatment/${req.params.patientID}`);
+        res.send(newMedication)
     } catch (error) {
         console.log(error)
         res.render('addTreatment/index.html.twig')
     }
 }
-exports.updateMedication = async (req, res) => {
-    try {
-        await medicationModel.updateOne({ _id: req.params.medId }, req.body)
-        res.redirect(`/addTreatment/${req.params.patientID}`)
-    } catch (error) {
-        console.log(error)
-        res.send(error)
-    }
-}
+// exports.updateMedication = async (req, res) => {
+//     try {
+//         await medicationModel.updateOne({ _id: req.params.medId }, req.body)
+//         res.redirect(`/addTreatment/${req.params.patientID}`)
+//     } catch (error) {
+//         console.log(error)
+//         res.send(error)
+//     }
+// }
 
-exports.deleteMedication = async (req, res) => {
-    try {
-        let deleteMedication = await medicationModel.deleteOne({ _id: req.params.medID })
-        await doctorModel.updateOne({ _id: req.session.user }, { $pull: { medicationList: req.params.medID } })
-        res.json(deleteMedication)
-    } catch (error) {
-        console.log(error.message)
-        res.json(error)
-    }
-}
+// exports.deleteMedication = async (req, res) => {
+//     try {
+//         let deleteMedication = await medicationModel.deleteOne({ _id: req.params.medID })
+//         await doctorModel.updateOne({ _id: req.session.user }, { $pull: { medicationList: req.params.medID } })
+//         res.json(deleteMedication)
+//     } catch (error) {
+//         console.log(error.message)
+//         res.json(error)
+//     }
+// }
 
 
 

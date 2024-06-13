@@ -16,10 +16,10 @@ doctorRouter.get('/addPatient/:patientID',authguard, doctorController.addPatient
 doctorRouter.get('/addTreatment/:patientID', authguard, doctorController.getAddTreatment)
 doctorRouter.get("/detailTreatment/:patientID/:treatmentID",authguard, doctorController.getDetailsTreatment)
 doctorRouter.get('/deleteTreatment/:patientID/:treatmentID', authguard , doctorController.deleteTreatment)
-doctorRouter.delete('/deleteMedication/:medID', doctorController.deleteMedication)
+// doctorRouter.delete('/deleteMedication/:medID', doctorController.deleteMedication)
 doctorRouter.get('/get-user-session', authguard, doctorController.getUserId)
-doctorRouter.post('/updateMedication/:medId/:patientID', authguard, doctorController.updateMedication)
-doctorRouter.post('/createMedication/:patientID' , doctorController.createMedication)
+// doctorRouter.post('/updateMedication/:medId/:patientID', authguard, doctorController.updateMedication)
+doctorRouter.post('/createMedication' , doctorController.createMedication)
 doctorRouter.get('/getMedication/:id', authguard, doctorController.getmedicationList )
 doctorRouter.post("/doctorDashboard", doctorController.postLogin)
 doctorRouter.post("/doctorSubscribe", multer.fields([

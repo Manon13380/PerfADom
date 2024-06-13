@@ -388,6 +388,9 @@ input[type="date"] {
     width: 60%;
     height: 80%;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
 }
 
 
@@ -399,11 +402,7 @@ input[type="date"] {
     background-color: rgba(95, 172, 211, 1);
 }
 
-.detailPatient {
-    display: flex;
-    flex-direction: column;
-    row-gap: 30px;
-}
+
 
 .titleDetail {
     text-align: center;
@@ -421,7 +420,9 @@ input[type="date"] {
 }
 
 .treatmentList p {
-    margin-left: 70px
+    margin-left: 70px;
+    margin-bottom: 0;
+    margin-top:0
 }
 
 .treatmentList {
@@ -509,6 +510,10 @@ input[type="date"] {
     margin: auto;
     overflow-y: scroll;
     scrollbar-width: none;
+}
+
+#titleModal {
+    text-align: center;
 }
 
 #form_add_treatment {

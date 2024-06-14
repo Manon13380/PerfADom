@@ -444,10 +444,8 @@ exports.AddTreatment = async (req, res) => {
             newTreatment.validateSync()
             await newTreatment.save()
             await patientModel.updateOne({ _id: req.params.patientID }, { $push: { treatmentList: newTreatment._id } });
-            res.redirect(`/detailPatient/${req.params.patientID}`)
-     
+            res.redirect(`/detailPatient/${req.params.patientID}`)    
     } catch (error) {
-        console.log(error)
         res.render("doctorView/addTreatment/index.html.twig", {
             errors: error.errors,
             uri: detailPath,

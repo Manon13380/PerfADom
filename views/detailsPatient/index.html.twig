@@ -94,16 +94,14 @@
 						{% if patient.treatmentList %}
 							{% for treatment in patient.treatmentList %}
 								<div class="treatmentCard">
-									<div>
+									<div class="startDate">
 										<h4 id="treatmentName">{{treatment.name}}
 											du Dr
 											{{treatment.doctor.name|upper}}
 											{{treatment.doctor.firstname}}</h4>
-										<p>Date de Début :
-							
+										<p >Date de Début :
 												<span class="formattedDate">
 													{{treatment.startDate}}</span>
-									
 										</p>
 									</div>
 									<p>

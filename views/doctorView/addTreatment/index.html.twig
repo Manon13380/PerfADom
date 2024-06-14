@@ -83,6 +83,9 @@
                         {% if errors.medicationList is defined %}
                             <p class="error">{{errors.medicationList.message}}</p>
                         {% endif %}
+                        {% if errors.startDate is defined %}
+                            <p class="error">{{errors.startDate.message}}</p>
+                        {% endif %}
                     {% endif %}
                     <div id="medContainer">
 					{% if uri == '/updateTreatment'%}

@@ -14,6 +14,7 @@ const treatmentShema = new mongoose.Schema({
     },
     startDate: {
         type: Date,
+        required: [true, "Il faut une date de début de traitement"]
     },
     prescriptionDate : {
         type : Date,

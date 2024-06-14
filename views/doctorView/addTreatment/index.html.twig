@@ -33,7 +33,7 @@
 			<h2 class="sectionTitle">Ajouter un traitement</h2>
 		{% endif %}
 		{% if  uri == '/updateTreatment' %}
-		<form id="form_add_treatment" action="/updateTreatment/{{patient.id}}" method="post">
+		<form id="form_add_treatment" action="/updateTreatment/{{patient.id}}/{{currentTreatment._id}}" method="post">
 		{% else %}
 		<form id="form_add_treatment" action="/addTreatment/{{patient.id}}" method="post">	
 		{% endif %}
@@ -80,15 +80,17 @@
                         {% if errors.duration is defined %}
                             <p class="error">{{errors.duration.message}}</p>
                         {% endif %}
+                        {% if errors.medicationList is defined %}
+                            <p class="error">{{errors.medicationList.message}}</p>
+                        {% endif %}
                     {% endif %}
                     <div id="medContainer">
 					{% if uri == '/updateTreatment'%}
 						{% for med in currentTreatment.medicationList %}
 							<div class="medicationCard">
 								<div class="informationCard">
-									<input type="hidden" class="inputHidden" name="medication[]" value="med.medication._id">
-									<input type="hidden" class="inputHidden time_medication" name="medication[]" value="med._id">
-									<img src="/images/supprimer_medicament.png" class="delete_Button" onclick="deleteMed(this)">
+									<input type="hidden" class="inputHidden time_medication" name="timemedication[]" value="med._id">
+									<img src="/images/supprimer_medicament.png" class="delete_Button" onclick="deleteMed(this, '{{med._id}}')">
 									<p class="bold">{{med.medication.name}}</p>
 									<p>{{med.medication.routeAdministration}}</p>
 									<p>en {{med.medication.modeAdministration}}</p>

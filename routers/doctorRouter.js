@@ -26,6 +26,7 @@ doctorRouter.post("/doctorSubscribe", multer.fields([
     { name: 'stamp', maxCount: 1 }]), doctorController.postDoctor)
 doctorRouter.post("/addPatient", doctorController.postPatient)
 doctorRouter.post("/updatePatientD/:patientID", doctorController.updatePatient)
+doctorRouter.post("/updateTreatment/:patientID/:treatmentID", authguard , doctorController.updateTreatment )
 doctorRouter.post("/addTreatment/:patientID", doctorController.AddTreatment)
 
 

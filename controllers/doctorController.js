@@ -410,39 +410,44 @@ exports.AddTreatment = async (req, res) => {
     const medicationList = await medicationModel.find();
     let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
     try {
-        const medicationIds = []
-        for (let i = 0; i < req.body.medication.length; i++) {
-            const newTimeMedication = new timeMedicationModel({
-                medication: req.body.medication[i],
-                quantityAmpoule: req.body.quantityAmpoule[i],
-                quantity: req.body.quantity[i],
-                periodQuantity: req.body.periodQuantity[i],
-                duration: req.body.duration[i],
-                periodDuration: req.body.periodDuration[i]
-            })
-            newTimeMedication.validateSync();
-            await newTimeMedication.save();
-            medicationIds.push(newTimeMedication._id);
+            let medicationIds = null;
+            if (req.body.medication) {
+                medicationIds =[];
+            for (let i = 0; i < req.body.medication.length; i++) {
+                const newTimeMedication = new timeMedicationModel({
+                    medication: req.body.medication[i],
+                    quantityAmpoule: req.body.quantityAmpoule[i],
+                    quantity: req.body.quantity[i],
+                    periodQuantity: req.body.periodQuantity[i],
+                    duration: req.body.duration[i],
+                    periodDuration: req.body.periodDuration[i]
+                })
+                newTimeMedication.validateSync();
+                await newTimeMedication.save();
+                medicationIds.push(newTimeMedication._id);
+            }
         }
-        //transformer la date en format jj/mm/aa
-        let date = new Date();
-        let formattedDate = date.toLocaleDateString('fr-FR');
-        formattedDate = formattedDate.replace(/\//g, '-');
-
-        const newTreatment = new treatmentModel({
-            name: "Traitement du " + formattedDate,
-            medicationList: medicationIds,
-            startDate: req.body.startDate,
-            prescriptionDate: new Date(),
-            doctor: req.session.user,
-            patient: req.params.patientID,
-            model: false
-        })
-        newTreatment.validateSync()
-        await newTreatment.save()
-        await patientModel.updateOne({ _id: req.params.patientID }, { $push: { treatmentList: newTreatment._id } });
-        res.redirect(`/detailPatient/${req.params.patientID}`)
+            //transformer la date en format jj/mm/aa
+            let date = new Date();
+            let formattedDate = date.toLocaleDateString('fr-FR');
+            formattedDate = formattedDate.replace(/\//g, '-');
+            console.log(medicationIds )
+            const newTreatment = new treatmentModel({
+                name: "Traitement du " + formattedDate,
+                medicationList: medicationIds,
+                startDate: req.body.startDate,
+                prescriptionDate: new Date(),
+                doctor: req.session.user,
+                patient: req.params.patientID,
+                model: false
+            })
+            newTreatment.validateSync()
+            await newTreatment.save()
+            await patientModel.updateOne({ _id: req.params.patientID }, { $push: { treatmentList: newTreatment._id } });
+            res.redirect(`/detailPatient/${req.params.patientID}`)
+     
     } catch (error) {
+        console.log(error)
         res.render("doctorView/addTreatment/index.html.twig", {
             errors: error.errors,
             uri: detailPath,
@@ -489,6 +494,71 @@ exports.getDetailsTreatment = async (req, res) => {
         })
     } catch (error) {
         res.send(error)
+    }
+}
+
+exports.updateTreatment = async (req, res) => {
+    let optionRouteArray = ["VVP", "VVC", "PAC", "PICCLINE", "MIDLINE", "S/Cut"]
+    let optionDilutionArray = ["Aucune Dilution", "NACL0.9% 50ml", "NACL0.9% 100ml", "NACL0.9% 250ml", "NACL0.9% 500ml", "G5% 50ml", "G5% 100ml", "G5% 250ml", "G5% 500ml", "BioG5% 50ml", "BioG5% 100ml", "BioG5% 250ml", "BioG5% 500ml"]
+    let optionModeArray = ["Gravité", "Diffuseur", "Pompe"]
+    let optionTimeArray = ["30 minutes", "1 heure", "2 heures 30", "5 heures", "12 heures", "24 heures"]
+    const doctor = await doctorModel.findById(req.session.user)
+    const originalUrl = req.path;
+    const detailPath = "/" + originalUrl.split('/')[1];
+    let patient = await patientModel.findOne({ _id: req.params.patientID })
+    const medicationList = await medicationModel.find();
+    let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
+    try {
+        //transformer la date en format jj/mm/aa
+        let date = new Date();
+        let formattedDate = date.toLocaleDateString('fr-FR');
+        formattedDate = formattedDate.replace(/\//g, '-');
+        let newStartDate = req.body.startDate
+        let currentTreatment = treatmentModel.findOne({ _id: req.params.treatmentID })
+        if (req.body.medicationDelete) {
+            for (let i = 0; i < req.body.medicationDelete.length; i++) {
+                console.log("req.body.medicationDelete[i]= " + req.body.medicationDelete[i])
+                await timeMedicationModel.deleteOne({ _id: req.body.medicationDelete[i] });
+                await treatmentModel.updateOne({ _id: req.params.treatmentID }, { $pull: { medicationList: req.body.medicationDelete[i] } })
+            }
+        }
+        if (req.body.medication) {
+            for (let i = 0; i < req.body.medication.length; i++) {
+                const newTimeMedication = new timeMedicationModel({
+                    medication: req.body.medication[i],
+                    quantityAmpoule: req.body.quantityAmpoule[i],
+                    quantity: req.body.quantity[i],
+                    periodQuantity: req.body.periodQuantity[i],
+                    duration: req.body.duration[i],
+                    periodDuration: req.body.periodDuration[i]
+                })
+                newTimeMedication.validateSync();
+                await newTimeMedication.save();
+                await treatmentModel.updateOne({ _id: req.params.treatmentID }, { $push: { medicationList: newTimeMedication._id } })
+            }
+        }
+        if (newStartDate != currentTreatment.startDate) {
+            await treatmentModel.updateOne({ _id: req.params.treatmentID }, { $set: { startDate: newStartDate } })
+        }
+        await treatmentModel.updateOne({ _id: req.params.treatmentID }, { $set: { name: "Traitement du " + formattedDate } })
+        res.redirect(`/detailPatient/${req.params.patientID}`)
+    } catch (error) {
+        res.render("doctorView/addTreatment/index.html.twig", {
+            errors: error.errors,
+            uri: detailPath,
+            role: req.session.role,
+            userID: req.session.user,
+            userName: req.session.userName,
+            userFirstname: req.session.userFirstname,
+            patient: patient,
+            prestataire: prestataire,
+            medicationList: medicationList,
+            doctor: doctor,
+            optionRouteArray: optionRouteArray,
+            optionDilutionArray: optionDilutionArray,
+            optionModeArray: optionModeArray,
+            optionTimeArray: optionTimeArray
+        })
     }
 }
 

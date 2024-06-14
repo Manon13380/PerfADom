@@ -7,8 +7,10 @@ const treatmentShema = new mongoose.Schema({
     medicationList : {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "time_medications"
-        }]
+            ref: "time_medications",
+            
+        }],
+        required: [true, "Il faut au moins un médicament dans le traitement"]
     },
     startDate: {
         type: Date,

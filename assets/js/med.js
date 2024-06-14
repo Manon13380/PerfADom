@@ -66,7 +66,7 @@ function displayMedCard(med) {
     inputHidden.type = "hidden"
     let deleteButton = document.createElement('img')
     deleteButton.classList.add('delete_Button')
-    deleteButton.src = "../images/supprimer_medicament.png"
+    deleteButton.src = "/images/supprimer_medicament.png"
     informationCard.appendChild(deleteButton)
     deleteButton.addEventListener('click', function () {
         this.parentNode.parentNode.remove();
@@ -190,7 +190,12 @@ window.addEventListener('click', function (event) {
     }
 });
 
-function deleteMed(button) {
+function deleteMed(button, Id) {
+    let inputDelete = document.createElement('input');
+    medContainer.appendChild(inputDelete);
+    inputDelete.type = 'hidden';
+    inputDelete.value = Id;
+    inputDelete.name = 'medicationDelete[]'
     const medicationCard = button.closest('.medicationCard');
     medicationCard.remove();
 }

@@ -98,7 +98,7 @@ function displayMedCard(med) {
     inputQuantityAmpoule.classList.add('inputQuantityAmpoule')
     inputQuantityAmpoule.classList.add('input')
     inputQuantityAmpoule.name = "quantityAmpoule[]"
-    inputQuantityAmpoule.placeholder = "3"
+    inputQuantityAmpoule.placeholder = "Ex. 3"
     inputContainer.appendChild(inputQuantityAmpoule)
     let paraInputQuantityAmpoule = document.createElement('p')
     paraInputQuantityAmpoule.innerText = "Ampoules"
@@ -110,7 +110,7 @@ function displayMedCard(med) {
     let inputQuantity = document.createElement('input')
     inputQuantity.classList.add('inputQuantityAmpoule')
     inputQuantity.classList.add('input')
-    inputQuantity.placeholder = "3"
+    inputQuantity.placeholder = "Ex. 3"
     inputQuantity.name = "quantity[]"
     inputContainerTwo.appendChild(inputQuantity)
     let paraInputQuantity = document.createElement('p')
@@ -148,7 +148,7 @@ function displayMedCard(med) {
     let inputDuration = document.createElement('input')
     inputDuration.classList.add('inputQuantityAmpoule')
     inputDuration.classList.add('input')
-    inputDuration.placeholder = "3"
+    inputDuration.placeholder = "Ex. 3"
     inputDuration.name = "duration[]"
     inputContainerFour.appendChild(inputDuration)
     //input Container par jours....

@@ -45,7 +45,8 @@ exports.getDoctorSubscribe = (req, res) => {
 exports.getAddTreatment = async (req, res) => {
     try {
         let optionRouteArray = ["VVP", "VVC", "PAC", "PICCLINE", "MIDLINE", "S/Cut"]
-        let optionDilutionArray = ["Aucune Dilution", "NACL0.9% 50ml", "NACL0.9% 100ml", "NACL0.9% 250ml", "NACL0.9% 500ml", "G5% 50ml", "G5% 100ml", "G5% 250ml", "G5% 500ml", "BioG5% 50ml", "BioG5% 100ml", "BioG5% 250ml", "BioG5% 500ml"]
+        let optionDilutionArray = ["Aucune Dilution", "NACL0.9% 50ml", "NACL0.9% 100ml", "NACL0.9% 250ml", "NACL0.9% 500ml",
+            "G5% 50ml", "G5% 100ml", "G5% 250ml", "G5% 500ml", "BioG5% 50ml", "BioG5% 100ml", "BioG5% 250ml", "BioG5% 500ml"]
         let optionModeArray = ["Gravité", "Diffuseur", "Pompe"]
         let optionTimeArray = ["30 minutes", "1 heure", "2 heures 30", "5 heures", "12 heures", "24 heures"]
         const doctor = await doctorModel.findById(req.session.user)
@@ -53,7 +54,6 @@ exports.getAddTreatment = async (req, res) => {
         const detailPath = "/" + originalUrl.split('/')[1];
         let patient = await patientModel.findOne({ _id: req.params.patientID })
         const medicationList = await medicationModel.find();
-        let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
         let treatment;
         if (detailPath == "/updateTreatment") {
             treatment = await treatmentModel.findById({ _id: req.params.treatmentID }).populate({
@@ -70,7 +70,6 @@ exports.getAddTreatment = async (req, res) => {
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
             patient: patient,
-            prestataire: prestataire,
             medicationList: medicationList,
             doctor: doctor,
             optionRouteArray: optionRouteArray,
@@ -411,9 +410,9 @@ exports.AddTreatment = async (req, res) => {
     const medicationList = await medicationModel.find();
     let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
     try {
-            let medicationIds = null;
-            if (req.body.medication) {
-                medicationIds =[];
+        let medicationIds = null;
+        if (req.body.medication) {
+            medicationIds = [];
             for (let i = 0; i < req.body.medication.length; i++) {
                 const newTimeMedication = new timeMedicationModel({
                     medication: req.body.medication[i],
@@ -428,24 +427,24 @@ exports.AddTreatment = async (req, res) => {
                 medicationIds.push(newTimeMedication._id);
             }
         }
-            //transformer la date en format jj/mm/aa
-            let date = new Date();
-            let formattedDate = date.toLocaleDateString('fr-FR');
-            formattedDate = formattedDate.replace(/\//g, '-');
-            console.log(medicationIds )
-            const newTreatment = new treatmentModel({
-                name: "Traitement du " + formattedDate,
-                medicationList: medicationIds,
-                startDate: req.body.startDate,
-                prescriptionDate: new Date(),
-                doctor: req.session.user,
-                patient: req.params.patientID,
-                model: false
-            })
-            newTreatment.validateSync()
-            await newTreatment.save()
-            await patientModel.updateOne({ _id: req.params.patientID }, { $push: { treatmentList: newTreatment._id } });
-            res.redirect(`/detailPatient/${req.params.patientID}`)    
+        //transformer la date en format jj/mm/aa
+        let date = new Date();
+        let formattedDate = date.toLocaleDateString('fr-FR');
+        formattedDate = formattedDate.replace(/\//g, '-');
+        console.log(medicationIds)
+        const newTreatment = new treatmentModel({
+            name: "Traitement du " + formattedDate,
+            medicationList: medicationIds,
+            startDate: req.body.startDate,
+            prescriptionDate: new Date(),
+            doctor: req.session.user,
+            patient: req.params.patientID,
+            model: false
+        })
+        newTreatment.validateSync()
+        await newTreatment.save()
+        await patientModel.updateOne({ _id: req.params.patientID }, { $push: { treatmentList: newTreatment._id } });
+        res.redirect(`/detailPatient/${req.params.patientID}`)
     } catch (error) {
         res.render("doctorView/addTreatment/index.html.twig", {
             errors: error.errors,
@@ -506,7 +505,6 @@ exports.updateTreatment = async (req, res) => {
     const detailPath = "/" + originalUrl.split('/')[1];
     let patient = await patientModel.findOne({ _id: req.params.patientID })
     const medicationList = await medicationModel.find();
-    let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
     try {
         //transformer la date en format jj/mm/aa
         let date = new Date();
@@ -536,6 +534,11 @@ exports.updateTreatment = async (req, res) => {
                 await treatmentModel.updateOne({ _id: req.params.treatmentID }, { $push: { medicationList: newTimeMedication._id } })
             }
         }
+        if (req.body.timemedication) {
+            for (let i = 0; i < req.body.timemedication.length; i++) {
+                await timeMedicationModel.updateOne({ _id: req.body.timemedication[i] }, { $set: { quantityAmpoule: req.body.quantityAmpoule[i], quantity : req.body.quantity[i], periodQuantity: req.body.periodQuantity[i],  duration : req.body.duration[i], periodDuration : req.body.periodDuration[i] } })
+            }
+        }
         if (newStartDate != currentTreatment.startDate) {
             await treatmentModel.updateOne({ _id: req.params.treatmentID }, { $set: { startDate: newStartDate } })
         }
@@ -550,7 +553,6 @@ exports.updateTreatment = async (req, res) => {
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
             patient: patient,
-            prestataire: prestataire,
             medicationList: medicationList,
             doctor: doctor,
             optionRouteArray: optionRouteArray,

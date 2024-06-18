@@ -50,7 +50,7 @@
                     </div>
                     <div class="inputMedicationContainer">
                         <p>Médicaments :
-                            <select class="select" id="medicationList" name="prestataire">
+                            <select class="select" id="medicationList" name="medicationList">
                                 <option id="placeholder" value="" disabled selected hidden data-placeholder>Choix du médicament</option>
                                 {% for medication in medicationList %}
                                     <option data-value='{{medication|json_encode}}' value='{{medication.id}}'>
@@ -92,7 +92,7 @@
 						{% for med in currentTreatment.medicationList %}
 							<div class="medicationCard">
 								<div class="informationCard">
-									<input type="hidden" class="inputHidden time_medication" name="timemedication[]" value="med._id">
+									<input type="hidden" class="inputHidden time_medication" name="timemedication[]" value="{{med._id}}">
 									<img src="/images/supprimer_medicament.png" class="delete_Button" onclick="deleteMed(this, '{{med._id}}')">
 									<p class="bold">{{med.medication.name}}</p>
 									<p>{{med.medication.routeAdministration}}</p>

@@ -87,11 +87,11 @@
 						</p>
 					</div>
 				</div>
-				{% if patient.id in doctor.patientList or patient.id in prestataire.patientList %}
+				{% if (patient._id in doctor.patientList and role == "doctor") or (patient._id in prestataire.patientList and role == "prestataire")  %}
 					<div class="grandLine"></div>
 					<div class="treatmentList">
 						<p class="bold">Traitements :</p>
-						{% if patient.treatmentList %}
+						{% if patient.treatmentList is not empty %}
 							{% for treatment in patient.treatmentList %}
 								<div class="treatmentCard">
 									<div class="startDate">
@@ -122,7 +122,16 @@
 									</div>
 								</div>
 							{% endfor %}
-
+						{% else %}
+							<a href="/addTreatment/{{patient._id}}" id="add_patient" class="button">
+						<span id="add_button" class="button__text">Add Treatment</span>
+						<span id="icon_button" class="button__icon">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" viewbox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg">
+								<line y2="19" y1="5" x2="12" x1="12"></line>
+								<line y2="12" y1="12" x2="19" x1="5"></line>
+							</svg>
+						</span>
+					</a>
 						{% endif %}
 					</div>
 				{% else %}

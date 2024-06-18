@@ -1,6 +1,6 @@
 const genererMotDePasse = ()=> {
     const longueur = 8;
-    const caracteresSpeciaux = '!@#$%^&*()-_=+';
+    const caracteresSpeciaux = '#?!@$%^&*-/';
     const majuscule = String.fromCharCode(Math.floor(Math.random() * 26) + 65);
     const minuscule = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
     const chiffre = Math.floor(Math.random() * 10);

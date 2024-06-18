@@ -284,6 +284,7 @@ exports.postPatient = async (req, res) => {
                 + "Voici vos identifants pour vos connecter : \n\n"
                 + "Identifiant : " + newPatient.mail + "\n"
                 + "Mot de passe : " + password + "\n\n"
+                + "Lien pour se connecter http://localhost:4000/patientConnexion \n\n"
                 + "Cordialement \n\n L'équipe PerfADom"
         };
         await transporter.sendMail(mailOptions);

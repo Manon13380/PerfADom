@@ -84,7 +84,6 @@ exports.getUpdatePatient = async (req, res) => {
             prestataire: prestataire
         })
     } catch (error) {
-        console.log(error)
         res.send(error)
     }
 }
@@ -120,7 +119,6 @@ exports.getDetailPatient = async (req, res) => {
             doctor: doctor
         })
     } catch (error) {
-        console.log(error)
         res.send(error)
     }
 }
@@ -160,7 +158,6 @@ exports.postPrestataire = async (req, res) => {
         await newPrestataire.save();
         res.redirect("/")
     } catch (error) {
-        console.log(error)
         res.render("prestataireView/prestataireSubscribe/index.html.twig", {
             errors: error.errors,
             uri: req.path
@@ -188,7 +185,6 @@ exports.postLogin = async (req, res) => {
             throw { mail: "Cet utilisateur n'est pas enregistré" }
         }
     } catch (error) {
-        console.log(error)
         res.render('prestataireView/prestataireConnexion/index.html.twig', {
             error: error
 

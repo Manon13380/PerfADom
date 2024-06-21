@@ -1,5 +1,4 @@
 {% extends "base.html.twig" %}
-
 {% block title %}
     <title>PerfADom/Dashboard-Médecin</title>
 {% endblock %}
@@ -37,7 +36,6 @@
 		{% else %}
 		<form id="form_add_treatment" action="/addTreatment/{{patient.id}}" method="post">	
 		{% endif %}
-            
                 <div>
                     <div>
                         <p>Date du début du traitement :
@@ -54,7 +52,8 @@
                                 <option id="placeholder" value="" disabled selected hidden data-placeholder>Choix du médicament</option>
                                 {% for medication in medicationList %}
                                     <option data-value='{{medication|json_encode}}' value='{{medication.id}}'>
-                                        {{medication.name}} {{medication.routeAdministration}} en {{medication.modeAdministration}} dans {{medication.dilution}} en {{medication.infusionTime}}
+                                        {{medication.name}} {{medication.routeAdministration}} en {{medication.modeAdministration}} 
+                                        dans {{medication.dilution}} en {{medication.infusionTime}}
                                     </option>
                                 {% endfor %}
                             </select>

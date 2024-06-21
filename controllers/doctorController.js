@@ -80,7 +80,6 @@ exports.getAddTreatment = async (req, res) => {
         }
         )
     } catch (error) {
-        console.log(error)
         res.send(error)
     }
 }
@@ -158,7 +157,6 @@ exports.getAddPatient = async (req, res) => {
             prestataireList: prestataireList
         })
     } catch (error) {
-        console.log(error)
         res.send(error)
     }
 }
@@ -186,7 +184,6 @@ exports.getUpdatePatient = async (req, res) => {
             doctor: doctor
         })
     } catch (error) {
-        console.log(error);
         res.send(error.mesage)
     }
 }
@@ -408,9 +405,8 @@ exports.AddTreatment = async (req, res) => {
     const detailPath = "/" + originalUrl.split('/')[1];
     let patient = await patientModel.findOne({ _id: req.params.patientID })
     const medicationList = await medicationModel.find();
-    let prestataire = await prestataireModel.findOne({ _id: patient.prestataire })
     try {
-        let medicationIds = null;
+        let medicationIds;
         if (req.body.medication) {
             medicationIds = [];
             for (let i = 0; i < req.body.medication.length; i++) {
@@ -427,11 +423,13 @@ exports.AddTreatment = async (req, res) => {
                 medicationIds.push(newTimeMedication._id);
             }
         }
+        else {
+            medicationIds = null;
+        }
         //transformer la date en format jj/mm/aa
         let date = new Date();
         let formattedDate = date.toLocaleDateString('fr-FR');
         formattedDate = formattedDate.replace(/\//g, '-');
-        console.log(medicationIds)
         const newTreatment = new treatmentModel({
             name: "Traitement du " + formattedDate,
             medicationList: medicationIds,
@@ -454,7 +452,6 @@ exports.AddTreatment = async (req, res) => {
             userName: req.session.userName,
             userFirstname: req.session.userFirstname,
             patient: patient,
-            prestataire: prestataire,
             medicationList: medicationList,
             doctor: doctor,
             optionRouteArray: optionRouteArray,
@@ -514,7 +511,6 @@ exports.updateTreatment = async (req, res) => {
         let currentTreatment = treatmentModel.findOne({ _id: req.params.treatmentID })
         if (req.body.medicationDelete) {
             for (let i = 0; i < req.body.medicationDelete.length; i++) {
-                console.log("req.body.medicationDelete[i]= " + req.body.medicationDelete[i])
                 await timeMedicationModel.deleteOne({ _id: req.body.medicationDelete[i] });
                 await treatmentModel.updateOne({ _id: req.params.treatmentID }, { $pull: { medicationList: req.body.medicationDelete[i] } })
             }
@@ -536,7 +532,7 @@ exports.updateTreatment = async (req, res) => {
         }
         if (req.body.timemedication) {
             for (let i = 0; i < req.body.timemedication.length; i++) {
-                await timeMedicationModel.updateOne({ _id: req.body.timemedication[i] }, { $set: { quantityAmpoule: req.body.quantityAmpoule[i], quantity : req.body.quantity[i], periodQuantity: req.body.periodQuantity[i],  duration : req.body.duration[i], periodDuration : req.body.periodDuration[i] } })
+                await timeMedicationModel.updateOne({ _id: req.body.timemedication[i] }, { $set: { quantityAmpoule: req.body.quantityAmpoule[i], quantity: req.body.quantity[i], periodQuantity: req.body.periodQuantity[i], duration: req.body.duration[i], periodDuration: req.body.periodDuration[i] } })
             }
         }
         if (newStartDate != currentTreatment.startDate) {
@@ -601,11 +597,9 @@ exports.deleteTreatment = async (req, res) => {
         await treatmentModel.deleteOne({ _id: req.params.treatmentID })
         await patientModel.updateOne({ _id: req.params.patientID }, { $pull: { treatmentList: req.params.treatmentID } })
         const timeMedicationIds = treatment.medicationList;
-        console.log(timeMedicationIds)
         await timeMedicationModel.deleteMany({ _id: { $in: timeMedicationIds } });
         res.redirect(`/detailPatient/${req.params.patientID}`)
     } catch (error) {
-        console.log(error.message)
         res.render("detailsPatient/index.html.twig", {
             uri: detailPath,
             role: req.session.role,
@@ -630,7 +624,6 @@ exports.createMedication = async (req, res) => {
         await doctorModel.updateOne({ _id: req.session.user }, { $push: { medicationList: newMedication._id } })
         res.send(newMedication)
     } catch (error) {
-        console.log(error)
         res.render('addTreatment/index.html.twig')
     }
 }
@@ -663,7 +656,6 @@ exports.getMyPatient = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error)
         let patientList = await doctorModel.findById({ _id: req.session.user }).populate("patientList")
         res.render("dashboard/index.html.twig", {
             uri: req.path,

@@ -220,7 +220,7 @@ exports.postLogin = async (req, res) => {
         if (doctor) {
             if (await bcrypt.compare(req.body.password, doctor.password)) {
                 req.session.role = "doctor",
-                    req.session.user = doctor._id
+                req.session.user = doctor._id
                 req.session.userName = doctor.name
                 req.session.userFirstname = doctor.firstname
                 res.redirect("/doctorDashboard")
@@ -401,7 +401,7 @@ exports.AddTreatment = async (req, res) => {
     let optionModeArray = ["Gravité", "Diffuseur", "Pompe"]
     let optionTimeArray = ["30 minutes", "1 heure", "2 heures 30", "5 heures", "12 heures", "24 heures"]
     const doctor = await doctorModel.findById(req.session.user)
-    const originalUrl = req.path;
+    const originalUrl = req.path || '';
     const detailPath = "/" + originalUrl.split('/')[1];
     let patient = await patientModel.findOne({ _id: req.params.patientID })
     const medicationList = await medicationModel.find();
